@@ -1,0 +1,392 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="《JS函数式编程指南》使用JavaScript讲述了函数式编程的基本思想，函数式编程有很多优点，比如简洁，消除”副作用”等等。同时它是来源数学理论，可以达到更高的抽象度。
+
+介绍函数式编程也叫面向函数编程，是编程范式的一种，它其实出现得很早，理论基础起源于上个世纪30年代数学界的lambda演算，属于范畴论，最早运用这一思想的编程语言是上世纪50年代的Lisp语言，这门语言在黑客圈极具传奇色...">
+  
+  <title>函数式编程探索(一) -《JS函数式编程指南》读后感 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/12/01/TypeScript-3-7-断言函数/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript 3.7 - 断言函数
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/10/31/Javascript块级域内的函数声明提升/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Javascript块级域内的函数声明提升
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>函数式编程探索(一) -《JS函数式编程指南》读后感</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-11-05</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/函数式编程/">函数式编程</a>
+      
+      </span>
+      
+    </p>
+    
+    <blockquote>
+<p>《JS函数式编程指南》使用<code>JavaScript</code>讲述了函数式编程的基本思想，函数式编程有很多优点，比如简洁，消除”副作用”等等。同时它是来源数学理论，可以达到更高的抽象度。</p>
+</blockquote>
+<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p><code>函数式编程</code>也叫<code>面向函数编程</code>，是编程范式的一种，它其实出现得很早，理论基础起源于上个世纪30年代数学界的<code>lambda</code>演算，属于<code>范畴论</code>，最早运用这一思想的编程语言是上世纪50年代的<code>Lisp</code>语言，这门语言在黑客圈极具传奇色彩。</p>
+<p>另一种更为大家知道的编程范式就是大名鼎鼎的<code>面向对象编程</code>（当然，面向“对象”编程，是程序猿的梦想之一）。十年之前，我们接触到的编程教材、技术文章，讲述的几乎都是面向对象编程，编程不使用<code>接口、类、继承</code>，都不好意思说自己会编程。</p>
+<p>函数式编程思想近几年越来越为大家接受和推崇，两大主流语言相继增加了支持函数式编程的特性：</p>
+<p><code>Java8</code>新增了<code>Lambda</code>表达式，同时增加了相关应用场景的支持，如<code>Stream</code>流式处理；</p>
+<p><code>JavaScript</code>也在<code>ES6</code>增加了<code>Lambda</code>表达式，也增加了相关应用场景的支持，如<code>Array</code>的<code>map, fliter, reduce</code>操作。同时，<code>JavaScript</code>的三大框架之一React，今年新增了Hooks特性，支持有状态函数组件，从而完全可以替代类组件。</p>
+<p>从大的趋势来看，各大主流语言逐渐趋于支持多种范式，如JavaScript同时也增加了面向对象的特性：类和继承。</p>
+<h2 id="函数式编程的特点"><a href="#函数式编程的特点" class="headerlink" title="函数式编程的特点"></a>函数式编程的特点</h2><h3 id="函数是一等公民"><a href="#函数是一等公民" class="headerlink" title="函数是一等公民"></a>函数是一等公民</h3><p>这是函数式编程一个基本条件，这里并不是说函数有什么优先权，而是：<strong>函数和其它数据类型一样，可以赋值给变量、可以作为参数传递、可以作为返回值等等。</strong></p>
+<p>根据上面的特点，我们还可以引申出来一些概念：</p>
+<ul>
+<li>函数嵌套</li>
+<li>闭包</li>
+<li>高阶函数</li>
+</ul>
+<p>这些JS开发者都很熟悉，也会经常用到，等后面再回过头看看这些特性在函数式编程里面有什么使用场景。</p>
+<p>代码示例：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 嵌套函数，返回函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">regexCheck</span>(<span class="params">reg</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> reg.test(str)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 高阶函数</span></span><br><span class="line">regexCheck(<span class="regexp">/^(130|131)\d&#123;8&#125;$/</span>)(<span class="string">'13012341234'</span>)</span><br></pre></td></tr></table></figure></p>
+<h3 id="使用表达式，而不是语句"><a href="#使用表达式，而不是语句" class="headerlink" title="使用表达式，而不是语句"></a>使用表达式，而不是语句</h3><p>表达式的特点是：它是一个单纯的运算过程，完成后总是会有运算结果。最常见的表达式就是运算表达式，比如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> a = <span class="number">10</span></span><br><span class="line"><span class="keyword">const</span> b = a * <span class="number">10</span> + <span class="number">10</span></span><br></pre></td></tr></table></figure></p>
+<p>函数式编程里的表达式，其实就是把函数当作普通变量来使用：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 参数函数，返回函数</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ifNot</span>(<span class="params">func</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> !func(x)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数组合</span></span><br><span class="line"><span class="keyword">const</span> isHtmlTag = regexCheck(<span class="regexp">/&lt;\/?\S+&gt;/</span>)</span><br><span class="line">;[<span class="string">'hello world'</span>, <span class="string">'&lt;script&gt;alert(1)&lt;/script&gt;'</span>].filter(ifNot(isHtmlTag))</span><br></pre></td></tr></table></figure></p>
+<p>把函数当作变量一样来运算，代码可以变得很简洁灵活(后续还会接触更多的)。</p>
+<h3 id="没有副作用"><a href="#没有副作用" class="headerlink" title="没有副作用"></a>没有副作用</h3><p>这里的”副作用”就是<code>Side Effect</code>，指的就是：<strong>函数运行过程中，产生了运算以外的其他结果</strong>，比如：修改了全局变量、向数据库写入了数据、发起了网络请求等等。</p>
+<p>函数式编程为什么要消除“副作用”，经验丰富的程序员一定知道，系统复杂性和Bug很多时候就是因”副作用”而起：</p>
+<ul>
+<li>一个全局变量，很多地方都去使用和修改它，你将很难保证它没有被错误地使用。如果还涉及到了多线程，那就大大增加了系统复杂性，你去面试后端岗位，高并发是考察你能力的最重要的点。</li>
+<li>向数据库写入了数据和发起了网络请求一样，永远是系统中的炸弹，你不知道它什么时候就出现你没有预料到的状况。</li>
+</ul>
+<p>当然，<strong>我们也不能完全避免副作用，我们要做的是控制它</strong>，状态管理器<code>Redux</code>中就有<code>effects</code>概念，<code>React Hooks</code>里面也有<code>effect hook</code>，目的都是隔离“副作用”。</p>
+<p>消除”副作用”有一个常见的方案：<strong>不改变状态，即函数调用返回新的值</strong>，如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> serials = [<span class="string">'10'</span>, <span class="string">'20'</span>, <span class="string">'30'</span>]</span><br><span class="line"><span class="comment">// 下面的运算不会改变前面的变量</span></span><br><span class="line"><span class="keyword">const</span> serialsOpts = serials.concat([<span class="string">'40'</span>, <span class="string">'50'</span>]).join(<span class="string">'/'</span>)</span><br></pre></td></tr></table></figure></p>
+<h3 id="引用透明"><a href="#引用透明" class="headerlink" title="引用透明"></a>引用透明</h3><p>引用透明其实就是前面特性的衍生特性，说的就是：<strong>使用相同的参数调用函数，每次都会得到相同的结果。</strong> 我们完全可以用结果代替这个函数表达式，所以叫引用透明。</p>
+<p>当一个函数不依赖外部变量和状态时，它就可以满足引用透明，这样的函数我们也叫它<strong>纯函数</strong>。</p>
+<p>它的好处很多：</p>
+<ul>
+<li>很容易的理解和推导程序。</li>
+<li>我们还可以很容易地构建测试程序，因为它的运算逻辑是单纯、稳定的。</li>
+<li>可以任意地并行执行。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>函数编程起源于数学的范畴论，理论相当抽象，我还是个初学者，本篇简单介绍了函数式编程的历史和现状，讲述了函数式编程的基本特点。后续我还会继续学习和记录函数式编程的相关理论、常见设计模式和它们的应用。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#介绍"><span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#函数式编程的特点"><span class="toc-text">函数式编程的特点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#函数是一等公民"><span class="toc-text">函数是一等公民</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用表达式，而不是语句"><span class="toc-text">使用表达式，而不是语句</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#没有副作用"><span class="toc-text">没有副作用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#引用透明"><span class="toc-text">引用透明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/12/01/TypeScript-3-7-断言函数/" class="prev">&larr; 上一篇 TypeScript 3.7 - 断言函数</a>
+  
+
+  
+
+  
+    <a href="/2019/10/31/Javascript块级域内的函数声明提升/" class="next">下一篇 Javascript块级域内的函数声明提升 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

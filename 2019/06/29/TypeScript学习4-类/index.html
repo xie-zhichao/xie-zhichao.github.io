@@ -1,0 +1,396 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="类-面向对象的基础面向对象编程，应该是目前使用最广泛的编程模式。  
+JavaScript是基于原型的语言，自从广泛使用之后，面向对象的改造一直没停过，不少第三方库都使用原型实现了JavaScript下面的类，如：MooTools，Backbone。再到ES6标准，直接原生支持了类定义，不过只能算语法糖级的支持。
+TypeScript对面向对象支持的更彻底，非常接近Java、C#语言，支持接...">
+  
+  <title>TypeScript学习4-类 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/07/18/TypeScript学习5-接口与类的应用/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习5-接口与类的应用
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/06/24/移动端单击事件延迟的处理方法/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        移动端单击事件延迟的处理方法
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>TypeScript学习4-类</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-06-29</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/TypeScript/">TypeScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/接口/">接口</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="类-面向对象的基础"><a href="#类-面向对象的基础" class="headerlink" title="类-面向对象的基础"></a>类-面向对象的基础</h2><p>面向对象编程，应该是目前使用最广泛的编程模式。  </p>
+<p>JavaScript是基于原型的语言，自从广泛使用之后，面向对象的改造一直没停过，不少第三方库都使用原型实现了JavaScript下面的类，如：MooTools，Backbone。再到ES6标准，直接原生支持了类定义，不过只能算语法糖级的支持。</p>
+<p>TypeScript对面向对象支持的更彻底，非常接近Java、C#语言，支持接口、类、抽象、继承、可见性等面向对象特性。</p>
+<h2 id="面向对象三大特征"><a href="#面向对象三大特征" class="headerlink" title="面向对象三大特征"></a>面向对象三大特征</h2><h3 id="抽象"><a href="#抽象" class="headerlink" title="抽象"></a>抽象</h3><p>即同一类事物，我们可以把它抽象成一个描述，就是类。对外，我们看到的就是这个类描述，它有什么属性，它能干嘛，取决于它对外公开的属性和方法。它的内部如何运作，我们无需关注。  </p>
+<p>比如我们要用面向对象语言描述动物：动物有一个名字，动物能移动。它怎么做到能移动呢，外部是不用关心的。</p>
+<h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><p>如果抽象是基础，那么继承就是面向对象的高峰。抽象给了编程语言描述世界的画笔，那么继承就给了它色彩。  </p>
+<p>继承类拥有父类公开的、保护的属性和方法，同时还可以添加自己的属性和方法。</p>
+<p><strong>一般分为实现继承、接口继承。</strong></p>
+<p>再拿动物来说，鸟类是动物的一种，它不光继承了动物的特性，它还有自己的专属特性：它有翅膀，它能飞上天空。</p>
+<h3 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h3><p>多态简单来说，就是同一个类的对象，表现出不同的特性，是继承延伸出来的表现结果。</p>
+<p><strong>常见多态有覆盖、重载两类。</strong></p>
+<blockquote>
+<p>TypeScript中的类方法不支持真正意义上的重载，可以通过增加可选参数来达到重载的目的。<br>具体的原因，是因为重载在编译之后，是以多个不同名的函数存在的，调用哪个也是编译的时候确定的。而TypeScript需要支持JavaScript来调用它，JavaScript不知道编译之后的函数名。<br>后面会拿一篇文章来分析。</p>
+</blockquote>
+<p>还是拿动物为例，继承并覆盖move方法之后，鸟类实现了飞、鱼类实现了游。</p>
+<h2 id="TypeScript中类使用的常见场景"><a href="#TypeScript中类使用的常见场景" class="headerlink" title="TypeScript中类使用的常见场景"></a>TypeScript中类使用的常见场景</h2><ul>
+<li><p>使用TypeScript描述类。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 知识点：抽象类</span></span><br><span class="line">abstract <span class="class"><span class="keyword">class</span> <span class="title">Animal</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 知识点：私有成员</span></span><br><span class="line">    private _name: string;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 知识点：存取器</span></span><br><span class="line">    <span class="keyword">get</span> name(): string &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>._name;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">constructor</span>(name: string) &#123;</span><br><span class="line">      <span class="keyword">this</span>._name = name;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="comment">// 知识点：抽象方法</span></span><br><span class="line">    abstract move(distance: number): <span class="keyword">void</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>描述子类</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 知识点：实现抽象类的子类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bird</span> <span class="keyword">extends</span> <span class="title">Animal</span> </span>&#123;</span><br><span class="line">  <span class="comment">// 知识点：只读成员</span></span><br><span class="line">  <span class="comment">// 知识点：静态成员</span></span><br><span class="line">  <span class="keyword">static</span> readonly classification = <span class="string">'bird'</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 知识点：super()</span></span><br><span class="line">  <span class="keyword">constructor</span>(name: string) &#123;</span><br><span class="line">      <span class="keyword">super</span>(name);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 知识点：抽象方法实现</span></span><br><span class="line">  move(distance: number): <span class="keyword">void</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">`moved <span class="subst">$&#123;distance&#125;</span>.`</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> enum MoveMode &#123;</span><br><span class="line">  WALK,</span><br><span class="line">  FLY</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 知识点：子类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Owl</span> <span class="keyword">extends</span> <span class="title">Bird</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  private _mode: MoveMode;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">get</span> mode(): MoveMode &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'read move mode.'</span>);</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>._mode;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">set</span> mode(mode: MoveMode) &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'changed move mode.'</span>);</span><br><span class="line">      <span class="keyword">this</span>._mode = mode;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 知识点：super()</span></span><br><span class="line">  <span class="keyword">constructor</span>(name: string) &#123;</span><br><span class="line">      <span class="keyword">super</span>(name);</span><br><span class="line">      <span class="keyword">this</span>._mode = MoveMode.FLY;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 知识点：方法覆盖</span></span><br><span class="line">  move(distance: number): <span class="keyword">void</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (<span class="keyword">this</span>._mode) &#123;</span><br><span class="line">      <span class="keyword">case</span> MoveMode.FLY:</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="string">`fly <span class="subst">$&#123;distance&#125;</span>.`</span>);</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">case</span> MoveMode.WALK:</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="string">`walked <span class="subst">$&#123;distance&#125;</span>.`</span>);</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">      <span class="keyword">default</span>:;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="类相关的知识点总结"><a href="#类相关的知识点总结" class="headerlink" title="类相关的知识点总结"></a>类相关的知识点总结</h2><p>从上述示例中，整理出以下知识点，请结合示例回顾，加强一下理解。</p>
+<h3 id="抽象类、抽象方法"><a href="#抽象类、抽象方法" class="headerlink" title="抽象类、抽象方法"></a>抽象类、抽象方法</h3><p>抽象类不能实例化，抽象方法不能实现，需要在子类中实现。</p>
+<h3 id="抽象类实现"><a href="#抽象类实现" class="headerlink" title="抽象类实现"></a>抽象类实现</h3><p>继承抽象类，必须实现抽象方法。</p>
+<h3 id="子类"><a href="#子类" class="headerlink" title="子类"></a>子类</h3><p>继承了父类的类，是相对的。</p>
+<h3 id="类成员可见性"><a href="#类成员可见性" class="headerlink" title="类成员可见性"></a>类成员可见性</h3><ul>
+<li>public，公开，默认的可见性</li>
+<li>protected，保护，子类可见</li>
+<li>private，私有，本类可见</li>
+</ul>
+<h3 id="静态成员"><a href="#静态成员" class="headerlink" title="静态成员"></a>静态成员</h3><p>静态成员属于类。</p>
+<h3 id="只读成员"><a href="#只读成员" class="headerlink" title="只读成员"></a>只读成员</h3><p>只读，即初始化后不可修改，只能在声明和构造函数里初始化。</p>
+<h3 id="类成员存取器"><a href="#类成员存取器" class="headerlink" title="类成员存取器"></a>类成员存取器</h3><p>可以像成员一样来访问，一般用来做一些处理，比如校验，格式化等。</p>
+<h3 id="类方法覆盖"><a href="#类方法覆盖" class="headerlink" title="类方法覆盖"></a>类方法覆盖</h3><p>覆盖父类方法，实现自己的特性。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#类-面向对象的基础"><span class="toc-text">类-面向对象的基础</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#面向对象三大特征"><span class="toc-text">面向对象三大特征</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#抽象"><span class="toc-text">抽象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#继承"><span class="toc-text">继承</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#多态"><span class="toc-text">多态</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TypeScript中类使用的常见场景"><span class="toc-text">TypeScript中类使用的常见场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类相关的知识点总结"><span class="toc-text">类相关的知识点总结</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#抽象类、抽象方法"><span class="toc-text">抽象类、抽象方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#抽象类实现"><span class="toc-text">抽象类实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#子类"><span class="toc-text">子类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类成员可见性"><span class="toc-text">类成员可见性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#静态成员"><span class="toc-text">静态成员</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#只读成员"><span class="toc-text">只读成员</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类成员存取器"><span class="toc-text">类成员存取器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类方法覆盖"><span class="toc-text">类方法覆盖</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/07/18/TypeScript学习5-接口与类的应用/" class="prev">&larr; 上一篇 TypeScript学习5-接口与类的应用</a>
+  
+
+  
+
+  
+    <a href="/2019/06/24/移动端单击事件延迟的处理方法/" class="next">下一篇 移动端单击事件延迟的处理方法 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,396 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="背景我们有一个管理后台，使用的Ant Design pro2框架。
+需求管理后台大部分页面都是分页查询列表 + 详情的结构，常见的业务场景是：添加查询条件，翻页，找到业务数据，点击查看详情，处理完成后返回列表页。
+这个时候，为了使用便利，用户希望能保持之前的查询参数和分页参数，Ant Design Pro没有提供这个功能。
+设计思路分析一下，有两种方式：
+
+Redux存储查询参数和分页参数，...">
+  
+  <title>Ant Design管理后台，页面返回时，保持历史状态的解决方案 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/05/17/TypeScript学习2-数据类型/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习2-数据类型
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/05/09/TypeScript难点-类作为参数/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript难点-类作为参数
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Ant Design管理后台，页面返回时，保持历史状态的解决方案</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-05-15</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/React/">React</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Ant-Design/">Ant Design</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>我们有一个管理后台，使用的Ant Design pro2框架。</p>
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>管理后台大部分页面都是分页查询列表 + 详情的结构，常见的业务场景是：添加查询条件，翻页，找到业务数据，点击查看详情，处理完成后返回列表页。</p>
+<p>这个时候，为了使用便利，用户希望能保持之前的查询参数和分页参数，Ant Design Pro没有提供这个功能。</p>
+<h2 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h2><p>分析一下，有两种方式：</p>
+<ul>
+<li>Redux存储查询参数和分页参数，返回时，读取之前的state数据，作为初始化查参数。</li>
+<li>History state，查询参数和分页参数都通过pushState放在Url里面，返回时，读取Url里面的参数，做出初始化查询参数</li>
+</ul>
+<p>对比，选择History state，基于一下考虑：</p>
+<ul>
+<li>写在Url里面更直观，更符合Web的Url和资源对的理念</li>
+<li>页面强制刷新时，也可以保持参数</li>
+</ul>
+<p>另外，设计时考虑到方便，每个列表的查询参数，用一个json对象存放，然后通过base64转码，放在url中保持。</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><ul>
+<li><p>首先，在渲染查询表单时，用Url里面的查询参数初始化表单的值</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 根据query参数，初始化表单值</span></span><br><span class="line">  <span class="comment">// 根据query参数，初始化表单值</span></span><br><span class="line">  <span class="keyword">const</span> querying = Query.getQueryJson(<span class="string">'finalBalanceParams'</span>);</span><br><span class="line">  ...</span><br><span class="line">  &lt;FormItem label=<span class="string">"商户ID"</span>&gt;</span><br><span class="line">      &#123;getFieldDecorator(<span class="string">'id'</span>, &#123;</span><br><span class="line">        rules: [</span><br><span class="line">          &#123;</span><br><span class="line">            validator: textMaxLength(<span class="number">20</span>),</span><br><span class="line">          &#125;,</span><br><span class="line">        ],</span><br><span class="line">        initialValue: querying.id <span class="comment">// 用Url里面的查询参数初始化表单的值</span></span><br><span class="line">      &#125;)(&lt;Input maxLength="20" placeholder="输入商户ID" /&gt;)&#125;</span><br><span class="line">    &lt;<span class="regexp">/FormItem&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>其次，查询方法里面, 查询之前要先读取Url里面的查询参数，查询后，更新表单查询参数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读取和更新query参数</span></span><br><span class="line"><span class="keyword">const</span> querying = Query.getQueryJson(<span class="string">'finalBalanceParams'</span>);</span><br><span class="line">e &amp;&amp; (querying.pageNumber = <span class="number">1</span>); <span class="comment">// 按钮查询时重置为1</span></span><br><span class="line"><span class="keyword">const</span> finalBalanceParams = &#123; ...&#123; <span class="attr">pageNumber</span>: <span class="number">1</span>, <span class="attr">pageSize</span>: <span class="number">20</span> &#125;, ...querying, ...trimObject(formValues) &#125;;</span><br><span class="line">Query.appendQueryJson(<span class="string">'finalBalanceParams'</span>, finalBalanceParams);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>最后，在翻页、排序等参数改变的响应里面，更新分页等参数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 更新query参数</span></span><br><span class="line"><span class="keyword">const</span> querying = Query.getQueryJson(<span class="string">'finalBalanceParams'</span>);</span><br><span class="line"><span class="keyword">const</span> finalBalanceParams = &#123; ...querying, ...params &#125;;</span><br><span class="line">Query.appendQueryJson(<span class="string">'finalBalanceParams'</span>, finalBalanceParams);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li>初始化表单时，有些控件的初始值需要转换，比如日期选择器</li>
+<li>页面上有多个分页列表时，参数名要区分一下</li>
+<li>query里面，可以使用base64编码，存储json数据</li>
+</ul>
+<blockquote>
+<p>05-22，修订，参数使用json格式，base64转码后设置到url参数</p>
+</blockquote>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#需求"><span class="toc-text">需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计思路"><span class="toc-text">设计思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#示例"><span class="toc-text">示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意事项"><span class="toc-text">注意事项</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/05/17/TypeScript学习2-数据类型/" class="prev">&larr; 上一篇 TypeScript学习2-数据类型</a>
+  
+
+  
+
+  
+    <a href="/2019/05/09/TypeScript难点-类作为参数/" class="next">下一篇 TypeScript难点-类作为参数 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

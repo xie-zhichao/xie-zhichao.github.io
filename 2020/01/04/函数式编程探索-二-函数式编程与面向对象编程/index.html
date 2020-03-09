@@ -1,0 +1,411 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="面向对象编程是当前不可否认的应用最广泛的编程范式，函数式编程则从小众变得越来越热门，它们有哪些不同的地方，我从我了解的知识和使用过程中的感受来列几点。
+
+发展史函数式编程实际上要早于面向对象编程，它来源于数学中的 Lambada 表达式，发明它是用来表达数学中演算式，它以逻辑性和简洁的特点，一直流行于学术界。
+面向对象编程出现在软件工程化发展进程中，在编程范式中属于命令式，与声明式相对，它的...">
+  
+  <title>函数式编程探索(二) - 函数式编程与面向对象编程 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2020/01/05/Node-js-TypeScript-开发服务端是什么样的体验/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Node.js + TypeScript 开发服务端是什么样的体验
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/12/01/TypeScript-3-7-断言函数/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript 3.7 - 断言函数
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>函数式编程探索(二) - 函数式编程与面向对象编程</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2020-01-04</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/函数式编程/">函数式编程</a>
+      
+      </span>
+      
+    </p>
+    
+    <blockquote>
+<p>面向对象编程是当前不可否认的应用最广泛的编程范式，函数式编程则从小众变得越来越热门，它们有哪些不同的地方，我从我了解的知识和使用过程中的感受来列几点。</p>
+</blockquote>
+<h2 id="发展史"><a href="#发展史" class="headerlink" title="发展史"></a>发展史</h2><p><code>函数式编程</code>实际上要早于面向对象编程，它来源于数学中的 <code>Lambada</code> 表达式，发明它是用来表达数学中演算式，它以逻辑性和简洁的特点，一直流行于学术界。</p>
+<p><code>面向对象编程</code>出现在软件工程化发展进程中，在编程范式中属于命令式，与声明式相对，它的设计目的是为了软件的重用、灵活和扩展，主要特点是封装、继承和多态，在工业界广泛应用。</p>
+<blockquote>
+<p>说明：本文讨论的面向对象编程是基于类的面向对象，其实 <code>Javascript</code> 也是面向对象的，它是基于原型的面向对象。</p>
+</blockquote>
+<h2 id="范式"><a href="#范式" class="headerlink" title="范式"></a>范式</h2><p><code>函数式编程</code>属于<code>声明式</code>，声明式的设计理念是告诉计算机我需要达到什么目标；</p>
+<p><code>面向对象编程</code>属于<code>命令式</code>，命令式的设计理念是告诉计算机我需要你做什么操作。</p>
+<p>从字面上看，这么说很让人迷糊，计算机是一台机器，有什么主动和被动。我理解的是：什么语言都是编译成机器码，不存在主动被动。这里可以理解为我们写代码是给其他人阅读的和调用的，声明式代码看起来是要完成什么目标，比如数组的 <code>filter</code> ，就是按过滤函数过滤一个数组；命令式的代码看起来是要完成一个什么操作，比如 <code>for</code>，就是执行循环语句。</p>
+<p>我们先来看一个 <code>Javascript</code> 对比案例，感受一下有什么不同。</p>
+<p>有这么一个需求，对于下面的 <code>data</code> 数据：</p>
+<ol>
+<li>判断nums是不是空的，空的话找下一个;</li>
+<li>如果nums不是空，就停，并拿它的id去和后台要资料;</li>
+<li>如果全部的nums都是空的，就直接拿第一个的id去要资料。</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> data = [</span><br><span class="line">  &#123;</span><br><span class="line">    nums: [],</span><br><span class="line">    id: <span class="number">1</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    nums: [<span class="string">'222'</span>],</span><br><span class="line">    id: <span class="number">3</span></span><br><span class="line">  &#125;,&#123;</span><br><span class="line">    nums: [],</span><br><span class="line">    id: <span class="number">4</span></span><br><span class="line">  &#125;,&#123;</span><br><span class="line">    nums: [<span class="string">'3213'</span>,<span class="string">'33'</span>],</span><br><span class="line">    id: <span class="number">5</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+<p>命令式写法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(data.length&gt;<span class="number">0</span>)&#123;</span><br><span class="line">  <span class="keyword">let</span> target = data[<span class="number">0</span>]</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">let</span> index=<span class="number">0</span>;index&lt;data.length;index++)&#123;</span><br><span class="line">    <span class="keyword">let</span> item = data[index]</span><br><span class="line">    <span class="keyword">if</span>(item.nums &amp;&amp; item.nums.length &gt; <span class="number">0</span>)&#123;</span><br><span class="line">      target = item</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>声明式写法：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; id &#125; = data.filter(<span class="function"><span class="params">item</span> =&gt;</span> item.nums &amp;&amp; item.nums.length)[<span class="number">0</span>] || data[<span class="number">0</span>]</span><br></pre></td></tr></table></figure></p>
+<p>看上面两段代码，我们有个直观的感受：</p>
+<ul>
+<li>声明式写法直观、简洁;</li>
+<li>命令式写法对过程描述很清楚，更便于计算机阅读。</li>
+</ul>
+<blockquote>
+<p>这个例子只是展示两种模式的思维方式的不同，声明式简洁，因为它使用了 <code>filter</code> 运算。</p>
+</blockquote>
+<p>上述声明式写法已经用到了函数式编程，函数式编程在实践中总结出很多有用的运算，比如 <code>map</code> ，<code>reduce</code>，<code>filter</code>。</p>
+<p>上述命令式写法其实还没用到高级的设计模式，面向对象在大型项目构建时比较有优势。</p>
+<h2 id="工程应用"><a href="#工程应用" class="headerlink" title="工程应用"></a>工程应用</h2><p>工程应用领域，面向对象编程比较有优势，函数式只在少数领域有大型项目应用。</p>
+<h3 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h3><p>目前大多数的企业服务，都是使用 Java 编写的，也就是说用的是面向对象的编程模式。可见面向对象的优势还是很明显的。我来列举一下：</p>
+<ul>
+<li><strong>建模</strong><br>人类的认知模式就是渐进式的，从简单到复杂，从具体到抽象。面向对象的接口、类和继承非常容易对我们的认知进行建模，比如，我们做一个电商应用，那么肯定有这么几类对象：商店、商品、顾客、商家和订单等等，我们为每类对象创建一个类去描述它，类和类之间用关系连接起来，非常清晰。而且，商品是分很多品类的，那么我们再用继承来实现重用，基础的设计就这样完成了。再多一点，我们可以加上工厂模式去生产商品对象，非常好。</li>
+<li><strong>契约</strong><br>企业项目一般都是分工协作的，分模块开发，根据契约对内、对外提供服务。面向对象中用接口定义契约非常方便，内部开发定义好契约就明确了代码功能和边界，外部拿到契约就知道如何调用服务。这样做可以实现规范设计、降低耦合和并行开发，大大提高协作效率。</li>
+<li><strong>设计模式</strong><br>设计模式大家都不陌生，或多或少都会用到一些，使用设计模式可以让代码更简洁优美，重用性更好。不过这不能只算面向对象的优势，函数式编程也可以应用设计模式，只不过面向对象的广泛应用积累了很多很成熟的设计模式。</li>
+</ul>
+<h3 id="函数式"><a href="#函数式" class="headerlink" title="函数式"></a>函数式</h3><p>函数式编程在工程领域相对小众，在计算机理论界比较受欢迎，拥有很多骨灰级玩家。工程领域应用比较多的有 <code>Erlang</code>（爱立信的电信系统就是用它写的，并发性、稳定性特别好），还有 <code>scalar</code>（大数据处理框架 spark 是用它写的）。</p>
+<p>函数式编程的优势在第一篇，提到了，主要这几点：</p>
+<ul>
+<li>使用表达式，简洁</li>
+<li>状态不可变，副作用可控</li>
+<li>引用透明</li>
+</ul>
+<p>这个概念比较抽象，我们可以来看看一个入门的例子。<br>首先，定义一个容器，有了这个容器，我们就可以方便的进行表达式运算。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> Container = <span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.__value = x;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Container.of = <span class="function"><span class="keyword">function</span>(<span class="params">x</span>) </span>&#123; </span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> Container(x);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Container.prototype.map = <span class="function"><span class="keyword">function</span>(<span class="params">f</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">return</span> Container.of(f(<span class="keyword">this</span>.__value))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>它有什么好处呢？</p>
+<ul>
+<li>作为一个容器，存放数据</li>
+<li>可以使用 <code>map</code> 添加数据处理器</li>
+<li>可以链式调用</li>
+</ul>
+<p>我们来看看示例，比如我们想把一个句子中每个单词的首字母取出来，转成大写字母并拼在一起。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Container.of(<span class="string">'The quick brown fox jumps over the lazy dog.'</span>)</span><br><span class="line">  .map(<span class="function"><span class="params">s</span> =&gt;</span> s.split(<span class="regexp">/\b/</span>))</span><br><span class="line">  .map(<span class="function"><span class="params">s</span> =&gt;</span> s.map(<span class="function"><span class="params">w</span> =&gt;</span> w.trim().charAt(<span class="number">0</span>)).join(<span class="string">''</span>))</span><br><span class="line">  .map(<span class="function"><span class="params">s</span> =&gt;</span> s.toUpperCase());</span><br></pre></td></tr></table></figure></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>函数式编程并不是银弹，也不应该引起类似“Php是最好的语言”的争论。应该根据实际场景使用，一个项目，可以使用函数式编程，也可以使用面向对象编程，也可以都用，它们都可以满足你的需求。</p>
+<h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p><a href="https://zh.wikipedia.org/wiki/%E7%BC%96%E7%A8%8B%E8%8C%83%E5%9E%8B" target="_blank" rel="noopener">编程范式-Wiki</a><br><a href="https://llh911001.gitbooks.io/mostly-adequate-guide-chinese/content/ch8.html" target="_blank" rel="noopener">Javascript函数式编程</a></p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#发展史"><span class="toc-text">发展史</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#范式"><span class="toc-text">范式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工程应用"><span class="toc-text">工程应用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#面向对象"><span class="toc-text">面向对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数式"><span class="toc-text">函数式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#引用"><span class="toc-text">引用</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2020/01/05/Node-js-TypeScript-开发服务端是什么样的体验/" class="prev">&larr; 上一篇 Node.js + TypeScript 开发服务端是什么样的体验</a>
+  
+
+  
+
+  
+    <a href="/2019/12/01/TypeScript-3-7-断言函数/" class="next">下一篇 TypeScript 3.7 - 断言函数 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

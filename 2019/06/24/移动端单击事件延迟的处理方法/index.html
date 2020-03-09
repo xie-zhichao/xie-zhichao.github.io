@@ -1,0 +1,385 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="背景现在的移动端基本都是触摸屏，体验和pc端浏览器有区别：移动端主要是手指触摸操作，pc端主要是鼠标点击操作。
+理论上，手指触摸操作可以完全模拟鼠标的左键操作的。不过这里有个小插曲。
+
+苹果公司在开发iphone上的safari时，为了体检，增加了一个双击放大的操作。但是在pc浏览器上，点击和双击不是独立的，双击的第一次操作是单击。如果移动端也这么做的话，每次双击屏幕，都会先触发一次单击，会...">
+  
+  <title>移动端单击事件延迟的处理方法 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/06/29/TypeScript学习4-类/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习4-类
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/06/16/Ant-Design-Pro-使用高阶组件实现父子菜单/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Ant Design Pro-使用高阶组件实现父子菜单
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>移动端单击事件延迟的处理方法</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-06-24</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/移动端/">移动端</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/单击/">单击</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>现在的移动端基本都是触摸屏，体验和pc端浏览器有区别：移动端主要是手指触摸操作，pc端主要是鼠标点击操作。</p>
+<p>理论上，手指触摸操作可以完全模拟鼠标的左键操作的。不过这里有个小插曲。</p>
+<blockquote>
+<p>苹果公司在开发iphone上的safari时，为了体检，增加了一个双击放大的操作。但是在pc浏览器上，点击和双击不是独立的，双击的第一次操作是单击。<br>如果移动端也这么做的话，每次双击屏幕，都会先触发一次单击，会误使元素触发单击操作。<br>为了解决这个棘手的问题，苹果的解决方案是：点击后等待300ms，如果300ms内再次点击，就认为是双击，否则是单击。  </p>
+</blockquote>
+<p>这个就引发另外一个问题，单击操作响应会延迟300ms，这对要求极致体验的移动端来说，相当致命。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><ul>
+<li>禁止浏览器缩放功能  </li>
+</ul>
+<p>这个方案一般不推荐，因为需要浏览器支持，而且各系统兼容性不一样。</p>
+<ul>
+<li>使用touch事件代替</li>
+</ul>
+<p>使用这个方案有两个前提：</p>
+<ol>
+<li>不需要兼容pc端，因为pc端没有touch事件</li>
+<li>页面简单，不会出现层叠元素，<strong>单页应用的页面切换也算</strong>。<br>有层叠元素时，会出现点击穿透：点击之后，延迟300ms才会触发事件，这个时候，页面元素已经更新成另外一个元素了。<br>另外补充一下，jquery和zepto的tap事件也是基于touch事件封装的。</li>
+</ol>
+<ul>
+<li>使用FastClick库<br>FastClick库也是使用touch事件封装的，不过它会在300ms之前，阻止默认事件，不会触发300ms之后的click。<br>FastClick在touchEnd的时候，在符合条件的情况下，主动触发了click事件，这样避免了浏览器默认的300毫秒等待判断。为了防止原生的click被触发，这里还通过event.preventDefault()屏蔽了原生的click事件。<blockquote>
+<p>这里的click事件是fastclick自己封装的，并且是在原始元素上触发。</p>
+</blockquote>
+</li>
+</ul>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决方案"><span class="toc-text">解决方案</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/06/29/TypeScript学习4-类/" class="prev">&larr; 上一篇 TypeScript学习4-类</a>
+  
+
+  
+
+  
+    <a href="/2019/06/16/Ant-Design-Pro-使用高阶组件实现父子菜单/" class="next">下一篇 Ant Design Pro-使用高阶组件实现父子菜单 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

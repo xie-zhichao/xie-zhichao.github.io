@@ -1,0 +1,374 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="前言先看一段代码：123//结果大家可以自行调试看看var Default = Default || &#123;&#125;;var name = Default.name &amp;&amp; '';
+这是Js代码中经常会出现的逻辑运算用法，如此运用，代码更加优雅，这就是Js的魅力之一。
+逻辑运算原理分析
+这里分析一下原理，Js中逻辑运算的表达式，和Java有点不一样，表达式可以不是布尔...">
+  
+  <title>Js逻辑运算&&,||和位运算&,|的解析 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2018/04/05/也说饿了么和摩拜的收购/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        也说饿了么和摩拜的收购
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2018/02/15/CoffeeScript-Babel-Gulp/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        CoffeeScript+Babel+Gulp
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Js逻辑运算&&,||和位运算&,|的解析</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2018-03-10</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/逻辑运算/">逻辑运算</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/位运算/">位运算</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>先看一段代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//结果大家可以自行调试看看</span></span><br><span class="line"><span class="keyword">var</span> Default = Default || &#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> name = Default.name &amp;&amp; <span class="string">''</span>;</span><br></pre></td></tr></table></figure></p>
+<p>这是Js代码中经常会出现的逻辑运算用法，如此运用，代码更加优雅，这就是Js的魅力之一。</p>
+<h2 id="逻辑运算原理分析"><a href="#逻辑运算原理分析" class="headerlink" title="逻辑运算原理分析"></a>逻辑运算原理分析</h2><ul>
+<li>这里分析一下原理，Js中逻辑运算的表达式，和Java有点不一样，表达式可以不是布尔结果。<br><strong> 值得注意的是，Js中条件语句中的表达式可是任意类型，具体哪些类型判断为真，哪些判定为假，这里卖个关子，大家可以去翻阅资料。 </strong></li>
+<li>&amp;&amp;，逻辑与运算链，如果<strong> 最后一个表达式判定结束或碰到判定为假的表达式，然后停止判定，返回这个值 </strong>，如：console.log(1 &amp;&amp; ‘123’ &amp;&amp; null)，结果为null；console.log(1 &amp;&amp; ‘123’ &amp;&amp; ‘456’)，结果为：’456’。</li>
+<li>||，逻辑或运算链，判定过程相反：** 最后一个表达式判定结束或碰到判定为真的表达式，然后停止判定，并返回这个值。大家可以自行编写样例试一试。</li>
+</ul>
+<h2 id="位运算原理分析"><a href="#位运算原理分析" class="headerlink" title="位运算原理分析"></a>位运算原理分析</h2><p>位运算相比逻辑运算，用的频率可能没那么高，但位运算有时候就是神器。</p>
+<ul>
+<li>位运算本质上是，二进制位的逻辑运算。布尔类型true，false在内部就是1和0，这两个数正是计算机信息的基本单位。</li>
+<li>所以位运算和逻辑运算的区别，就在于，位运算不是判定真假（所以不会熔断），而是执行按位的逻辑运算</li>
+<li>最后，给个例子，大家可以看一看，想一想：console.log(123 &amp; 12 | ‘1’)，会输出什么结果呢？</li>
+</ul>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#逻辑运算原理分析"><span class="toc-text">逻辑运算原理分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#位运算原理分析"><span class="toc-text">位运算原理分析</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2018/04/05/也说饿了么和摩拜的收购/" class="prev">&larr; 上一篇 也说饿了么和摩拜的收购</a>
+  
+
+  
+
+  
+    <a href="/2018/02/15/CoffeeScript-Babel-Gulp/" class="next">下一篇 CoffeeScript+Babel+Gulp &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

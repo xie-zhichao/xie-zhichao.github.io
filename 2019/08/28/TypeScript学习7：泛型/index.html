@@ -1,0 +1,370 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="为什么引入泛型如果说接口和类是对一类事物的抽象描述，那么泛型可以说是对一类数据的抽象描述，进一步加强了语言的抽象程度，让组件重用性更好。  
+看一个小例子，实现数组的单条数据插入：
+123456789101112131415function insertTo&lt;T&gt;(array: T[], index: number, t: T): T[] &#123;  if (index &l...">
+  
+  <title>TypeScript学习7：泛型 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/10/11/TypeScript学习8：高级类型-交叉类型、联合类型/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习8：高级类型-交叉类型、联合类型
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/08/09/Ant-Design-Pro-实践React-Hooks-组件/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Ant Design Pro - 实践React Hooks - 组件
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>TypeScript学习7：泛型</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-08-28</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="为什么引入泛型"><a href="#为什么引入泛型" class="headerlink" title="为什么引入泛型"></a>为什么引入泛型</h2><p>如果说接口和类是对一类事物的抽象描述，那么泛型可以说是对一类数据的抽象描述，进一步加强了语言的抽象程度，让组件重用性更好。  </p>
+<p>看一个小例子，实现数组的单条数据插入：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">insertTo</span>&lt;<span class="title">T</span>&gt;(<span class="params">array: T[], index: <span class="built_in">number</span>, t: T</span>): <span class="title">T</span>[] </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (index &lt; <span class="number">0</span> || array.length - <span class="number">1</span> &lt; index) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Illegal index.'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  array.splice(index, <span class="number">0</span>, t);</span><br><span class="line">  <span class="keyword">return</span> array;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> arr1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>];</span><br><span class="line">insertTo(arr1, <span class="number">2</span>, <span class="number">3</span>);</span><br><span class="line"><span class="built_in">console</span>.log(arr1);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> arr2 = [<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'d'</span>];</span><br><span class="line">insertTo(arr2, <span class="number">2</span>, <span class="string">'c'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(arr2);</span><br></pre></td></tr></table></figure>
+<p>这个函数使用了泛型来表示传入参数的类型，我们可以很明显感觉到泛型的好处：一个函数就可以适配多种类型。用普通方式，我们要重复这段逻辑写n个函数，用泛型一个就够用，这就是抽象的好处。</p>
+<h2 id="泛型的不同场景"><a href="#泛型的不同场景" class="headerlink" title="泛型的不同场景"></a>泛型的不同场景</h2><p>泛型可以用于函数，也可以用于类，还有更高级的用法：带限定的泛型。后面高级类型，还会用到泛型，会更复杂一些。</p>
+<h3 id="泛型函数"><a href="#泛型函数" class="headerlink" title="泛型函数"></a>泛型函数</h3><p>上面已给了一个例子，这里再补充一个用法，限定类型的泛型函数：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> GenericInsertFn&lt;T&gt; &#123;</span><br><span class="line">    &lt;T&gt;(array: T[], index: <span class="built_in">number</span>, t: T): T[]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> myInsertTo: GenericInsertFn&lt;<span class="built_in">number</span>&gt; = insertTo;</span><br></pre></td></tr></table></figure>
+<p>通过类型限定之后，我们就得到了一个新的函数，这个函数只能操作数字类型的数组。</p>
+<h3 id="泛型类"><a href="#泛型类" class="headerlink" title="泛型类"></a>泛型类</h3><p>泛型类和泛型函数用法类似，只是泛型声明在类上，整个类范围都可以用。<br>看个小例子：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> MyArrayList&lt;T&gt; &#123;</span><br><span class="line">  <span class="keyword">private</span> _array: T[];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>._array = [];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">get</span> lenght(): <span class="built_in">number</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>._array.length;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">get</span>(index: <span class="built_in">number</span>): T &#123;</span><br><span class="line">    <span class="keyword">if</span> (index &lt; <span class="number">0</span> || <span class="keyword">this</span>._array.length - <span class="number">1</span> &lt; index) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Illegal index.'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>._array[index];</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  push(...elements: T[]): <span class="built_in">number</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>._array.push(...elements);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  insertTo(index: <span class="built_in">number</span>, t: T): T[] &#123;</span><br><span class="line">    <span class="keyword">if</span> (index &lt; <span class="number">0</span> || <span class="keyword">this</span>._array.length - <span class="number">1</span> &lt; index) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Illegal index.'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>._array.splice(index, <span class="number">0</span>, t);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>._array;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上例子实现了一个简单的泛型的ArrayList，如果你熟悉Java语言，对此就不陌生了。实现的效果和函数类似，也是抽象和重用。</p>
+<h3 id="泛型的限定"><a href="#泛型的限定" class="headerlink" title="泛型的限定"></a>泛型的限定</h3><p>有的场景，泛型需要限定范围，比如一个任务执行者函数，需要接受实现了工作者接口的函数作为参数才可以执行，那么就需要带限定的泛型参数，看代码：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> IWorker &#123;</span><br><span class="line">  (task: <span class="built_in">string</span>): <span class="built_in">number</span>; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">excutor</span>&lt;<span class="title">W</span> <span class="title">extends</span> <span class="title">IWorker</span>&gt;(<span class="params">r: W</span>) </span>&#123;</span><br><span class="line">  r(<span class="string">'case1'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> myWorker: IWorker = <span class="function"><span class="keyword">function</span> (<span class="params">task: <span class="built_in">string</span></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;task&#125;</span> is start.`</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">excutor(myWorker);</span><br></pre></td></tr></table></figure>
+<p>再看一个更复杂一点的用法，多重泛型，抽象度也更高，通用性也更好。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> IJobRunner&lt;T, K&gt; &#123;</span><br><span class="line">  run(t: T): K;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> ITimeJobExcutor&lt;T, K, R <span class="keyword">extends</span> IJobRunner&lt;T, K&gt;&gt; &#123;</span><br><span class="line">  excute(r: R): <span class="built_in">void</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>基本的泛型用法学习完了，后面高级类型还会继续学习更高级的用法。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么引入泛型"><span class="toc-text">为什么引入泛型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#泛型的不同场景"><span class="toc-text">泛型的不同场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#泛型函数"><span class="toc-text">泛型函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#泛型类"><span class="toc-text">泛型类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#泛型的限定"><span class="toc-text">泛型的限定</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/10/11/TypeScript学习8：高级类型-交叉类型、联合类型/" class="prev">&larr; 上一篇 TypeScript学习8：高级类型-交叉类型、联合类型</a>
+  
+
+  
+
+  
+    <a href="/2019/08/09/Ant-Design-Pro-实践React-Hooks-组件/" class="next">下一篇 Ant Design Pro - 实践React Hooks - 组件 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

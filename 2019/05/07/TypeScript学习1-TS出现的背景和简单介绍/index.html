@@ -1,0 +1,381 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="TypeScript出现的背景前端项目趋向工程化之后，模块化开发模式开始成为主流：
+公用的逻辑和UI都被抽出来，独立成模块，供外部调用。在调用这些模块时，就会面临着沟通问题，我们要知道如何去调用，参数是什么，返回值是什么，它们的类型和结构？
+传统的做法
+第三方库，如JQuery，你想通过看源文件来查看如何调用，难度很大，一般都是压缩混淆过的。只能访问技术文档网站，查API文档。
+内部的库，有...">
+  
+  <title>TypeScript学习1-TS出现的背景和简单介绍 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/05/09/TypeScript难点-类作为参数/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript难点-类作为参数
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/04/24/使用Table组件时，报should-have-a-unique-key/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        使用Table组件时，报should have a unique key
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>TypeScript学习1-TS出现的背景和简单介绍</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-05-07</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="TypeScript出现的背景"><a href="#TypeScript出现的背景" class="headerlink" title="TypeScript出现的背景"></a>TypeScript出现的背景</h2><p>前端项目趋向工程化之后，<strong>模块化</strong>开发模式开始成为主流：</p>
+<p>公用的逻辑和UI都被抽出来，独立成模块，供外部调用。在调用这些模块时，就会面临着沟通问题，我们要知道如何去调用，参数是什么，返回值是什么，它们的类型和结构？</p>
+<h3 id="传统的做法"><a href="#传统的做法" class="headerlink" title="传统的做法"></a>传统的做法</h3><ul>
+<li>第三方库，如JQuery，你想通过看源文件来查看如何调用，难度很大，一般都是压缩混淆过的。只能访问技术文档网站，查API文档。</li>
+<li>内部的库，有写文档最好，可以读文档。没有写文档的，只能去读源代码，或当面去问。</li>
+</ul>
+<h3 id="存在的问题"><a href="#存在的问题" class="headerlink" title="存在的问题"></a>存在的问题</h3><ul>
+<li>第三方库，文档一般都是维护较好的，多花一点时间去读文档就ok了</li>
+<li>内部库，如果文档维护不好，可能会出现用法不对，出现问题，影响开发质量和进度</li>
+</ul>
+<h2 id="什么是TypeScript"><a href="#什么是TypeScript" class="headerlink" title="什么是TypeScript"></a>什么是TypeScript</h2><p>TypeScript是JavaScript的超集，在它的基础上做了一层封装，提供了静态类型，高级数据类型等语言特性。最终还是编译成JavaScript执行。</p>
+<h3 id="静态类型"><a href="#静态类型" class="headerlink" title="静态类型"></a>静态类型</h3><p>静态类型是TypeScript的核心特性。<br>先通过示例来看看JavaScript和TypeScript的对比。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JavaScript</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">formatA</span>(<span class="params">var1</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> ret;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">typeof</span> var1 === <span class="string">'string'</span>) &#123;</span><br><span class="line">        ret = <span class="string">'[log]'</span> + var1;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'param must be a string!'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TypeScript</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">formatA</span>(<span class="params">var1: <span class="built_in">string</span></span>): <span class="title">string</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'[log]'</span> + var1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>更复杂一点的例子<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JavaScript</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> fetch = <span class="function"><span class="keyword">function</span> (<span class="params">url, params, user</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// dosomething</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> http(options).then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line">  &#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TypeScript</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">interface</span> User &#123;</span><br><span class="line">    userid: <span class="built_in">number</span>,</span><br><span class="line">    username: <span class="built_in">string</span>,</span><br><span class="line">    userTags?: <span class="built_in">Array</span>&lt;<span class="built_in">string</span>&gt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> fetch = <span class="function"><span class="keyword">function</span> (<span class="params">url: <span class="built_in">string</span> | object, params?: <span class="built_in">any</span>, user?: User</span>): <span class="title">Promise</span>&lt;<span class="title">object</span> | <span class="title">Error</span>&gt; </span>&#123;</span><br><span class="line">  <span class="comment">// dosomething</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> http(options).then(<span class="function"><span class="params">data</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> data</span><br><span class="line">  &#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> err</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对比下来，感受很明显：</p>
+<ul>
+<li>TypeScript参数和返回值类型明确，调用时不会用错</li>
+<li>TypeScript中的数据结构也是明确的，不需要查文档也能确定如何使用</li>
+</ul>
+<p><strong>TypeScript让代码描述自身</strong></p>
+<h2 id="IDE"><a href="#IDE" class="headerlink" title="IDE"></a>IDE</h2><ul>
+<li>VSCode对TypeScript支持也很友好，能达到强类型语言，如Java的语法提示体验。</li>
+</ul>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#TypeScript出现的背景"><span class="toc-text">TypeScript出现的背景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#传统的做法"><span class="toc-text">传统的做法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#存在的问题"><span class="toc-text">存在的问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是TypeScript"><span class="toc-text">什么是TypeScript</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#静态类型"><span class="toc-text">静态类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IDE"><span class="toc-text">IDE</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/05/09/TypeScript难点-类作为参数/" class="prev">&larr; 上一篇 TypeScript难点-类作为参数</a>
+  
+
+  
+
+  
+    <a href="/2019/04/24/使用Table组件时，报should-have-a-unique-key/" class="next">下一篇 使用Table组件时，报should have a unique key &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

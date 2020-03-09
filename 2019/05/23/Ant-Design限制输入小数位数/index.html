@@ -1,0 +1,372 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="背景和需求使用Ant Design组件的管理后台，有一个表单金额输入，使用InputNumber组件，需要限制输入的小数位数。比如，只能输入2位小数，不能多输。
+设计通过分析Ant Design组件文档，有两个配置项候选：
+
+onChange，表单值改变时调用，考虑每次改变时，判断新输入的值是否符合要求，如果不符合，重置为原来的值
+parser，表单值改变时调用，区别是，这个方法会把输入的值...">
+  
+  <title>Ant Design限制输入小数位数 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/05/30/TypeScript学习难点-Interface-vs-Type-alias/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习难点-Interface vs Type alias
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/05/17/TypeScript学习2-数据类型/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习2-数据类型
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Ant Design限制输入小数位数</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-05-23</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/React/">React</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Ant-Design/">Ant Design</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="背景和需求"><a href="#背景和需求" class="headerlink" title="背景和需求"></a>背景和需求</h2><p>使用Ant Design组件的管理后台，有一个表单金额输入，使用InputNumber组件，需要限制输入的小数位数。比如，只能输入2位小数，不能多输。</p>
+<h2 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h2><p>通过分析Ant Design组件文档，有两个配置项候选：</p>
+<ul>
+<li>onChange，表单值改变时调用，考虑每次改变时，判断新输入的值是否符合要求，如果不符合，重置为原来的值</li>
+<li>parser，表单值改变时调用，区别是，这个方法会把输入的值格式化，然后设置为组件的值，不需要手动重置值</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>实现时发现，onChange方案不行，在onChange里面重置表单值无效，应该是被本身的赋值覆盖掉了（为了验证这个猜测，我加了一个timeout，延迟执行，就可以了，但是体验不太好，会闪一下）。</p>
+<p>所以最终，使用了parser方案。</p>
+<p>JavaScript<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * ant pro inputNumber组件，金额限制小数两位</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ant form&#125;</span> </span>form </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;string&#125;</span> </span>fieldName </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number | string&#125;</span> </span>value </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> </span>num default:2 </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">amountFixed</span>(<span class="params">form, fieldName, value, num = <span class="number">2</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> valueStr = <span class="string">`<span class="subst">$&#123;value || <span class="string">''</span>&#125;</span>`</span>;</span><br><span class="line">  <span class="keyword">const</span> valueSplit = valueStr.split(<span class="string">'.'</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (valueSplit.length &gt; <span class="number">1</span> &amp;&amp; (valueSplit[<span class="number">1</span>].length &gt; num || valueSplit.length &gt; <span class="number">2</span>)) &#123;</span><br><span class="line">    <span class="keyword">return</span> form.getFieldValue(fieldName);;</span><br><span class="line">  &#125; </span><br><span class="line">  <span class="keyword">return</span> value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Jsx，这里用的是parser<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;InputNumber</span><br><span class="line">    min=&#123;<span class="number">0</span>&#125;</span><br><span class="line">    precision=&#123;<span class="number">2</span>&#125;</span><br><span class="line">    parser=&#123;value =&gt; amountFixed(form, <span class="string">'list[1].amount'</span>, value)&#125;</span><br><span class="line">    style=&#123;&#123; <span class="attr">width</span>: <span class="string">'100%'</span> &#125;&#125;</span><br><span class="line">    placeholder=<span class="string">"请输入金额"</span></span><br><span class="line">  /&gt;</span><br></pre></td></tr></table></figure></p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景和需求"><span class="toc-text">背景和需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计"><span class="toc-text">设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-text">实现</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/05/30/TypeScript学习难点-Interface-vs-Type-alias/" class="prev">&larr; 上一篇 TypeScript学习难点-Interface vs Type alias</a>
+  
+
+  
+
+  
+    <a href="/2019/05/17/TypeScript学习2-数据类型/" class="next">下一篇 TypeScript学习2-数据类型 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

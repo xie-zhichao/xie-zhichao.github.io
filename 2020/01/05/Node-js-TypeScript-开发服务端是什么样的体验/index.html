@@ -1,0 +1,388 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="Node.js + TypeScript 开发服务端是什么样的体验，和传统的服务端语言 Java 有什么不同，我来说几点我的感受。
+
+Node.js特性Node.js 和传统的后端语言 Java 在设计上是有很大区别的。一个是动态语言，一个是静态语言；一个是单线程模型，一个是多线程模型。
+Node.js 其实不是一门语言，它是 Javascript 的服务器运行时环境, 在它出现之前 Jav...">
+  
+  <title>Node.js + TypeScript 开发服务端是什么样的体验 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2020/01/14/从零开始实践React-高阶组件-HOC/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        从零开始实践React 高阶组件(HOC)
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2020/01/04/函数式编程探索-二-函数式编程与面向对象编程/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        函数式编程探索(二) - 函数式编程与面向对象编程
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Node.js + TypeScript 开发服务端是什么样的体验</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2020-01-05</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/Node-js/">Node.js</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Node-js/">Node.js</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Graphql/">Graphql</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Koa2/">Koa2</a>
+      
+      </span>
+      
+    </p>
+    
+    <blockquote>
+<p><code>Node.js + TypeScript</code> 开发服务端是什么样的体验，和传统的服务端语言 <code>Java</code> 有什么不同，我来说几点我的感受。</p>
+</blockquote>
+<h2 id="Node-js特性"><a href="#Node-js特性" class="headerlink" title="Node.js特性"></a>Node.js特性</h2><p><code>Node.js</code> 和传统的后端语言 <code>Java</code> 在设计上是有很大区别的。<strong>一个是动态语言，一个是静态语言；一个是单线程模型，一个是多线程模型</strong>。</p>
+<p><code>Node.js</code> 其实不是一门语言，它是 <code>Javascript</code> 的服务器运行时环境, 在它出现之前 <code>Javascript</code> 只能运行在浏览器中。在这里我们也可以这么说：<strong><code>Node.js</code>就是可以写服务端的<code>Javascript</code></strong>。</p>
+<p><code>Node.js</code>是单线程模型，并且是事件驱动和异步I/O(底层是基于c语言实现的<code>libuv库</code>)，这个是它最基本的特点，和它相似的是Nginx。这个特点决定来它适合的场景：<strong>I/O密集、少计算的应用</strong>。</p>
+<blockquote>
+<p>举个例子：<code>Node.js</code>的线程模型就像是麦当劳店里面的负责下单的服务员，客人排队下单，每个客人下完单就在旁边等餐，服务员则继续为下一个客人下单。同时，期间如果发现餐柜有客人的快餐准备好了，就端给旁边等候的客人。<br>我们会发现：虽然只有一个人服务，但是整个过程非常高效。</p>
+</blockquote>
+<p>我们来分析一下原因：麦当劳的服务员虽然服务的客人非常多，但是花费在每个客人身上的时间是非常短的，所以整体上非常高效。同时短板也很明显：如果碰问题顾客，下单非常慢，排队的客人就会拥堵。</p>
+<p>其实还有一个重中之重：<strong>麦当劳服务员能如此高效，要依靠后面提供支持的强大的配送和运营系统。</strong></p>
+<p><code>Java</code>则是多线程模型，与<code>Node.js</code>相比，它就是高级餐厅，一对一服务，互不影响，当然成本也是高的。</p>
+<p>以上这些都是基本运行模型的特性，实际使用还是要看场景给设计。</p>
+<h2 id="TypeScript黑魔法"><a href="#TypeScript黑魔法" class="headerlink" title="TypeScript黑魔法"></a>TypeScript黑魔法</h2><p><code>Javascript</code> 是动态语言，用于脚本等场景时，非常灵活高效。但是业务逻辑场景时，规范性和严谨性就不足了，主要表现在：变量、参数、返回值的类型不确定，容易被用错；模块之间的调用、对外提供接口时，契约定义不明确。</p>
+<p>有了<code>TypeScript</code>，<code>ES6</code>之后，上述问题就有了明显改善，同时<code>TypeScript</code>强大的类型系统，让设计和编写仍然拥有非常好的灵活性和设计空间。</p>
+<p><code>Java</code>有的接口、泛型、类、继承和多态，<code>TypeScript</code>一应俱全，同时<code>TypeScript</code>还有交叉类型、联合类型、映射类型、类型推导和条件类型等黑魔法。</p>
+<p>另外，因为<code>TypeScript</code> 是 <code>Javascript</code>的超集，所以它也具备函数式编程的能力。函数式编程的抽象能力非常强大，能提供很多有用的特性：比如<code>副作用消除</code>，<code>引用透明</code>，<code>高阶函数</code>，<code>闭包</code>，<code>模式匹配</code>，<code>延迟求值</code>等等。</p>
+<h2 id="生态"><a href="#生态" class="headerlink" title="生态"></a>生态</h2><p><code>Node.js + TypeScript</code>被越来越多的公司用于核心业务，比如：国外的Paypal、Linkedin、Walmart、Netflix等，国内的阿里、腾讯、网易等。<br><code>npm</code>托管的包数量已经超越其他包托管器。</p>
+<p>框架方面，国外的<code>Nest.js</code>，国内的<code>Midway</code>已经有了很多成熟应用案例。<code>Nest.js</code>从编程体验上，也和<code>Spring</code>非常相似。</p>
+<h2 id="更多"><a href="#更多" class="headerlink" title="更多"></a>更多</h2><p><code>Node.js</code>后续会日趋成熟，应用范围也会越来越广泛。当然，短期内还不会替<code>Java</code>的企业服务主力位置，毕竟能力特性不一样，并且生态成熟度、基础设施成熟度还是差了不止一个量级的。</p>
+<p><code>Node.js</code>最新版支持了<code>Worker Thread</code>，<code>诊断报告</code>，<code>Heap Dump</code>，这几个特性让它在生产环境的使用越来越得心应手，同时还有大幅的速度提升，后续表现可期。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Node-js特性"><span class="toc-text">Node.js特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TypeScript黑魔法"><span class="toc-text">TypeScript黑魔法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生态"><span class="toc-text">生态</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#更多"><span class="toc-text">更多</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2020/01/14/从零开始实践React-高阶组件-HOC/" class="prev">&larr; 上一篇 从零开始实践React 高阶组件(HOC)</a>
+  
+
+  
+
+  
+    <a href="/2020/01/04/函数式编程探索-二-函数式编程与面向对象编程/" class="next">下一篇 函数式编程探索(二) - 函数式编程与面向对象编程 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

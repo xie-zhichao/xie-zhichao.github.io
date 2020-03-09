@@ -1,0 +1,393 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="需求后台项目，使用Ant Design Pro, 有这样一个需求：有一个表格，宽度是自适应的，表格中有一列是备注，文本长度不定，我们希望在文本过长的时候，使用省略样式（ellipsis），同时鼠标悬浮时有提示框展示完整文本。
+设计我计划设计一个React Hooks组件，嵌在表格里面，实现文本的自适应省略样式。
+单元格宽度这一列我们只能使用相对宽度，因为整个表格是自适应宽度的，如果用固定宽度...">
+  
+  <title>Ant Design Pro - 实践React Hooks - 组件 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/08/28/TypeScript学习7：泛型/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习7：泛型
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/08/02/Ant-Design-Pro-实践React-Hooks（一）/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Ant Design Pro-实践React Hooks（一）
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Ant Design Pro - 实践React Hooks - 组件</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-08-09</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/React/">React</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/React-Hooks/">React Hooks</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Ant-Design/">Ant Design</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>后台项目，使用Ant Design Pro, 有这样一个需求：有一个表格，宽度是自适应的，表格中有一列是备注，文本长度不定，我们希望在文本过长的时候，使用省略样式（ellipsis），同时鼠标悬浮时有提示框展示完整文本。</p>
+<h2 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h2><p>我计划设计一个React Hooks组件，嵌在表格里面，实现文本的自适应省略样式。</p>
+<h3 id="单元格宽度"><a href="#单元格宽度" class="headerlink" title="单元格宽度"></a>单元格宽度</h3><p>这一列我们只能使用相对宽度，因为整个表格是自适应宽度的，如果用固定宽度，可能在大屏上，这一列显得很窄。  </p>
+<p><strong>这里我用百分比，同时在页面组件维护一个宽度状态，在mounted之后，按百分比计算这一列的宽度并更新状态，如：clientWidth * 0.2。另外，监听window resize事件，更新宽度状态。</strong></p>
+<h3 id="组件宽度"><a href="#组件宽度" class="headerlink" title="组件宽度"></a>组件宽度</h3><p>列宽计算出来之后，会通过props传给组件，有了宽度，利用：<strong>text-overflow: ellipsis;</strong> 就可以实现动态宽度的文本省略了。</p>
+<h3 id="提示框"><a href="#提示框" class="headerlink" title="提示框"></a>提示框</h3><p>这个提示框是在超长时才有，不超长时是没有的。这个是比较麻烦的一点，因为你要知道当前是不是在超长省略状态，我们需要这个状态来设置是否加提示框。  </p>
+<p>为了实现这个功能，<strong>我加了两个Hooks状态：是否超长、文本真实宽度。</strong></p>
+<ul>
+<li><strong>文本真实宽度</strong>：渲染完成后，通过dom获取元素宽度。</li>
+<li><strong>是否超长</strong>：比较文本真实宽度和组件的宽度。</li>
+</ul>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>这里我就直接贴代码了，在后面会理一下关键点。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="function"><span class="keyword">function</span> <span class="title">LineEllipsis</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; children, width = <span class="string">'200px'</span>, ...restProps &#125; = props;</span><br><span class="line">  <span class="keyword">const</span> [textWidth, setTextWidth] = useState(<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">const</span> [isOverflow, setIsOverflow] = useState(<span class="literal">false</span>);</span><br><span class="line">  <span class="keyword">const</span> textRef = useRef(<span class="literal">null</span>);</span><br><span class="line">  <span class="keyword">const</span> textStyles = &#123;</span><br><span class="line">    width,</span><br><span class="line">    display: <span class="string">'inline-block'</span>,</span><br><span class="line">    overflow: <span class="string">'hidden'</span>,</span><br><span class="line">    wordWrap: <span class="string">'nowrap'</span>,</span><br><span class="line">    textOverflow: <span class="string">'ellipsis'</span>,</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  useEffect(</span><br><span class="line">    () =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (textRef) &#123;</span><br><span class="line">        <span class="keyword">const</span> &#123; current &#125; = textRef;</span><br><span class="line">        <span class="keyword">const</span> clientWidth = current.clientWidth;</span><br><span class="line">        setTextWidth(clientWidth);</span><br><span class="line">        <span class="keyword">if</span> (!isOverflow &amp;&amp; clientWidth &gt; <span class="built_in">parseInt</span>(width)) &#123;</span><br><span class="line">          setIsOverflow(<span class="literal">true</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isOverflow &amp;&amp; clientWidth &lt; <span class="built_in">parseInt</span>(width)) &#123;</span><br><span class="line">          setIsOverflow(<span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    [children]</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  useEffect(</span><br><span class="line">    () =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (textRef &amp;&amp; textWidth &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!isOverflow &amp;&amp; textWidth &gt; <span class="built_in">parseInt</span>(width)) &#123;</span><br><span class="line">          setIsOverflow(<span class="literal">true</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isOverflow &amp;&amp; textWidth &lt; <span class="built_in">parseInt</span>(width)) &#123;</span><br><span class="line">          setIsOverflow(<span class="literal">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    [width]</span><br><span class="line">  );</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> textRender = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;span</span><br><span class="line">        ref=&#123;textRef&#125;</span><br><span class="line">        style=&#123;isOverflow ? textStyles : &#123; <span class="attr">display</span>: <span class="string">'inline-block'</span> &#125;&#125;</span><br><span class="line">        &#123;...restProps&#125;</span><br><span class="line">      &gt;</span><br><span class="line">        &#123;children&#125;</span><br><span class="line">      &lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">    );</span></span><br><span class="line"><span class="regexp">  &#125;;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  return (</span></span><br><span class="line"><span class="regexp">    &lt;div style=&#123;&#123; width &#125;&#125;&gt;</span></span><br><span class="line"><span class="regexp">      &#123;isOverflow ? (</span></span><br><span class="line"><span class="regexp">        &lt;Popover content=&#123;&lt;pre className=&#123;styles.pop&#125;&gt;&#123;children&#125;&lt;/</span>pre&gt;&#125;&gt;&#123;textRender()&#125;&lt;<span class="regexp">/Popover&gt;</span></span><br><span class="line"><span class="regexp">      ) : (</span></span><br><span class="line"><span class="regexp">        textRender()</span></span><br><span class="line"><span class="regexp">      )&#125;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>div&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="关键点："><a href="#关键点：" class="headerlink" title="关键点："></a>关键点：</h3><ul>
+<li>span的样式，要设置为inline-block，方便取到文本宽度。</li>
+<li>文本可能会更新，所以需要监听children对象，变化时更新文本宽度、是否超长。</li>
+<li>组件宽度是根据props参数动态适应，所以也需要监听，变化时要更新是否超长的状态。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>第二次使用React Hooks，确确实实感受到了好处。</p>
+<ul>
+<li>userEffect的依赖设置非常灵活好用。<ul>
+<li>不设置，每次更新都会触发。</li>
+<li>设置为空，只在第一次加载时触发。</li>
+<li>设置为其他状态、或props中的状态时，只在这些状态变化时触发（<strong>*注意，依赖为对象时，不会深比较</strong>）。</li>
+</ul>
+</li>
+<li>得益于useState, useEffect的用法灵活，Hooks组件写法上确实简洁不少。</li>
+</ul>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#需求"><span class="toc-text">需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计"><span class="toc-text">设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#单元格宽度"><span class="toc-text">单元格宽度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#组件宽度"><span class="toc-text">组件宽度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#提示框"><span class="toc-text">提示框</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-text">实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#关键点："><span class="toc-text">关键点：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/08/28/TypeScript学习7：泛型/" class="prev">&larr; 上一篇 TypeScript学习7：泛型</a>
+  
+
+  
+
+  
+    <a href="/2019/08/02/Ant-Design-Pro-实践React-Hooks（一）/" class="next">下一篇 Ant Design Pro-实践React Hooks（一） &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

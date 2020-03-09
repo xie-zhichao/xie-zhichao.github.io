@@ -1,0 +1,391 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="高阶组件的定义HOC高阶组件，概念来源于函数式编程中的高阶函数，高阶函数的定义是：入参是函数，并且返回函数的函数；类推，高阶组件定义就是：入参是组件，并且返回组件的函数。==强调一下，它是一个函数==。
+我们用TypeScript来描述一下单参数的高阶组件：
+
+因为高阶组件来源于函数式编程，所以本文的示例会采用函数式的写法。
+
+1type HOC = (Fc: React.FC) =&gt;...">
+  
+  <title>从零开始实践React 高阶组件(HOC) [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+  
+    <div class="item next">
+      <a href="/2020/01/05/Node-js-TypeScript-开发服务端是什么样的体验/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Node.js + TypeScript 开发服务端是什么样的体验
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>从零开始实践React 高阶组件(HOC)</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2020-01-14</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/React/">React</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Hooks/">Hooks</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/高阶组件/">高阶组件</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="高阶组件的定义"><a href="#高阶组件的定义" class="headerlink" title="高阶组件的定义"></a>高阶组件的定义</h2><p><code>HOC高阶组件</code>，概念来源于函数式编程中的<code>高阶函数</code>，高阶函数的定义是：入参是函数，并且返回函数的函数；类推，高阶组件定义就是：入参是组件，并且返回组件的函数。==强调一下，它是一个函数==。</p>
+<p>我们用<code>TypeScript</code>来描述一下单参数的高阶组件：</p>
+<blockquote>
+<p>因为高阶组件来源于函数式编程，所以本文的示例会采用函数式的写法。</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">type HOC = <span class="function">(<span class="params">Fc: React.FC</span>) =&gt;</span> React.FC</span><br></pre></td></tr></table></figure>
+<p>有了类型系统，设计上就会清晰规范很多。</p>
+<h2 id="高阶组件的用途"><a href="#高阶组件的用途" class="headerlink" title="高阶组件的用途"></a>高阶组件的用途</h2><p>高阶组件是一个函数，它会返回一个新的组件，这样有什么用呢？</p>
+<p>我们来看Web前端最基本的场景：我们有一个图书列表，需要用Ajax请求数据，然后在页面上把它展现出来。</p>
+<p>我们现在基于React框架，从最简单的方案开始，看看整个进化过程：</p>
+<h3 id="方案1-0-简单直接"><a href="#方案1-0-简单直接" class="headerlink" title="方案1.0 - 简单直接"></a>方案1.0 - 简单直接</h3><p>第一种方案最直接：在组件mounted之后，执行Ajax请求，待取到数据之后，更新状态，触发组件更新，渲染数据到UI上面。</p>
+<p>核心代码是这样的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> BookList = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> [bookList, setBookList] = useState([]);</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    Ajax.get(<span class="string">'data/books'</span>).then(<span class="function"><span class="params">res</span> =&gt;</span> setBookList(res));</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">      &#123;bookList.map(<span class="function"><span class="params">book</span> =&gt;</span> (</span><br><span class="line">        &lt;li&gt;&#123;book.name&#125;(&#123;book.author&#125;)&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">      ))&#125;</span></span><br><span class="line"><span class="regexp">    &lt;/u</span>l&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>这个方案跑起来没啥问题，不过略显粗糙，没有分层，耦合太重。如果我们要加图书评论列表、相似图书推荐列表等等功能，那么就要再写几个看起来差不多的组件。模型和状态部分的代码几乎是重复的。</p>
+<p>==重复的代码肯定是可以抽象出来的==，来看下一个方案。</p>
+<h3 id="方案2-0-高阶组件"><a href="#方案2-0-高阶组件" class="headerlink" title="方案2.0 - 高阶组件"></a>方案2.0 - 高阶组件</h3><p>高阶组件可以传入一个无状态组件，返回一个新组件，那么我们是不是可以把通用的模型和状态封装在新组件里面，通过子组件的形式把模型状态通过<code>props</code>传入被包装的组件，这样就达到抽象通用功能的目地。</p>
+<p>核心代码很简单：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> WithModel = <span class="function">(<span class="params">WrappedComponent, modelPath</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> WrappedComponentWithModel = <span class="function"><span class="params">props</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> [data, setData] = useState(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">    useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      Ajax.get(<span class="string">'data/'</span> + modelPath).then(<span class="function"><span class="params">res</span> =&gt;</span> setData(res));</span><br><span class="line">    &#125;, []);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &lt;WrappedComponent &#123;...props&#125; data=&#123;data&#125; /&gt;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> WrappedComponentWithModel;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> BookList = <span class="function"><span class="params">props</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; <span class="attr">data</span>: bookList &#125; = props;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">      &#123;(bookList || []).map(<span class="function"><span class="params">book</span> =&gt;</span> (</span><br><span class="line">        &lt;li&gt;&#123;book.name&#125;(&#123;book.author&#125;)&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">      ))&#125;</span></span><br><span class="line"><span class="regexp">    &lt;/u</span>l&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> BookComments = <span class="function"><span class="params">props</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; <span class="attr">data</span>: bookComments &#125; = props;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">      &#123;(bookComments || []).map(<span class="function"><span class="params">comment</span> =&gt;</span> (</span><br><span class="line">        &lt;li&gt;&#123;comment.content&#125; <span class="keyword">from</span> &#123;comment.author&#125;&lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">      ))&#125;</span></span><br><span class="line"><span class="regexp">    &lt;/u</span>l&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> BookListWithModle = WithModel(BookList);</span><br><span class="line"><span class="keyword">const</span> BookCommentsWithModle = WithModel(BookComments);</span><br></pre></td></tr></table></figure>
+<p>这样重构之后，是不是感觉架构提升了一个层次，我们可以很方便地在模型层增加功能，比如Ajax响应结果的检查。</p>
+<p><strong>还存在待改进的地方</strong>：</p>
+<ul>
+<li>现在可以查询数据了，如果还需要发送数据怎么办？比如添加一条图书记录、添加一条新的评论。</li>
+<li>如果另外一个组件也要展示图书列表，那两个组件里面的数据是不是就重复了？</li>
+<li>如果两个组件都展示图书列表，但是用两份数据，那么一个组件刷新了，会不会两个组件展示的数据不一致？</li>
+<li>还有一个隐藏问题，如果在Ajax请求数据时，组件销毁了，状态还会更新吗？会有问题吗？</li>
+</ul>
+<p>如何解决上述问题？我们来看3.0版：</p>
+<h3 id="方案3-0-高阶组件工厂"><a href="#方案3-0-高阶组件工厂" class="headerlink" title="方案3.0 - 高阶组件工厂"></a>方案3.0 - 高阶组件工厂</h3><p>高阶组件工厂，参考自设计模式中的工厂模式，我们通过给定的设置让组件工厂去生产组件，是方案2.0的进一步抽象。</p>
+<p>看核心代码，重点地方会给出注释说明：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; useState, useEffect &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">useModelStore</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> Ajax = <span class="function">(<span class="params">(</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> books = [&#123; <span class="attr">name</span>: <span class="string">'Book1'</span>, <span class="attr">content</span>: <span class="string">'About book'</span>, <span class="attr">author</span>: <span class="string">'Alex'</span> &#125;];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> getBooks = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolver</span> =&gt;</span> &#123;</span><br><span class="line">        setTimeout(resolver(books), <span class="number">200</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> addBook = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolver</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> No = <span class="built_in">Math</span>.round(<span class="built_in">Math</span>.random() * <span class="number">1000</span>);</span><br><span class="line">        books.push(&#123; <span class="attr">name</span>: <span class="string">`Book<span class="subst">$&#123;No&#125;</span>`</span>, <span class="attr">content</span>: <span class="string">`About book<span class="subst">$&#123;No&#125;</span>`</span>, <span class="attr">author</span>: <span class="string">'Alex'</span> &#125;);</span><br><span class="line">        setTimeout(resolver(<span class="number">200</span>), <span class="number">200</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">      <span class="keyword">get</span>: getBooks,</span><br><span class="line">      post: addBook,</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;)();</span><br><span class="line"></span><br><span class="line">  // 这里先定义一个图书Model Hooks函数，用于工厂创建Model Hooks</span><br><span class="line">  const BookModelHooks = initialState =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> [bookList, setBookList] = useState(initialState);</span><br><span class="line">    <span class="keyword">const</span> [pending, setPending] = useState(<span class="literal">false</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> load = <span class="keyword">async</span> params =&gt; &#123;</span><br><span class="line">      setPending(<span class="literal">true</span>);</span><br><span class="line">      Ajax.get(<span class="string">'data/books'</span>, params)</span><br><span class="line">        .then(<span class="function"><span class="params">res</span> =&gt;</span> setBookList(res))</span><br><span class="line">        .finally(<span class="function"><span class="params">()</span> =&gt;</span> setPending(<span class="literal">false</span>));</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> addBook = <span class="keyword">async</span> params =&gt; &#123;</span><br><span class="line">      Ajax.post(<span class="string">'data/books/add'</span>, params).then(<span class="function"><span class="params">()</span> =&gt;</span> load());</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回Model相关的state和state操作</span></span><br><span class="line">    <span class="keyword">return</span> [bookList, &#123; pending, load, addBook &#125;];</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 顶层状态仓库</span></span><br><span class="line">  <span class="keyword">const</span> ModelStore = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">let</span> $store = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> createStore = <span class="function">(<span class="params">modelName, ModelHooks, initialState</span>) =&gt;</span> &#123;</span><br><span class="line">      $store = <span class="built_in">Object</span>.assign(&#123;&#125;, $store, &#123; [modelName]: ModelHooks(initialState) &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> getStore = <span class="function"><span class="params">modelName</span> =&gt;</span> $store[modelName];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> &#123; createStore, getStore &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> modelStore = ModelStore();</span><br><span class="line">  modelStore.createStore(<span class="string">'bookModel'</span>, BookModelHooks, []);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> modelStore;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里就是高阶组件工厂，工厂会生产出一个可以注入图书Model的高阶组件</span></span><br><span class="line"><span class="keyword">const</span> WithModelFactory = <span class="function"><span class="params">modelName</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">// 返回高阶组件</span></span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="params">WrappedComponent</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> WrappedComponentWithModel = <span class="function"><span class="params">props</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123; modelStore, ...passThroughProps &#125; = props;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> &lt;WrappedComponent &#123;...passThroughProps&#125; model=&#123;modelStore.getStore(modelName)&#125; /&gt;;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> WrappedComponentWithModel;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> BookList = <span class="function"><span class="params">props</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; model &#125; = props;</span><br><span class="line">  <span class="keyword">const</span> [bookList, &#123; load, addBook &#125;] = model || [];</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    load &amp;&amp; load();</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;&gt;</span><br><span class="line">      &lt;ul&gt;</span><br><span class="line">        &#123;(bookList || []).map(<span class="function"><span class="params">book</span> =&gt;</span> (</span><br><span class="line">          &lt;li&gt;</span><br><span class="line">            &#123;book.name&#125;(&#123;book.author&#125;)</span><br><span class="line">          &lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">        ))&#125;</span></span><br><span class="line"><span class="regexp">      &lt;/u</span>l&gt;</span><br><span class="line">      &lt;button type=<span class="string">"button"</span> onClick=&#123;addBook&#125;&gt;Add+&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> BookComments = <span class="function"><span class="params">props</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; model &#125; = props;</span><br><span class="line">  <span class="keyword">const</span> [bookList] = model || [];</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">      &#123;(bookList || []).map(<span class="function"><span class="params">comment</span> =&gt;</span> (</span><br><span class="line">        &lt;li&gt;</span><br><span class="line">          &#123;comment.content&#125; <span class="keyword">from</span> &#123;comment.author&#125;</span><br><span class="line">        &lt;<span class="regexp">/li&gt;</span></span><br><span class="line"><span class="regexp">      ))&#125;</span></span><br><span class="line"><span class="regexp">    &lt;/u</span>l&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> BookListWithModel = WithModelFactory(<span class="string">'bookModel'</span>)(BookList);</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> BookCommentsWithModel = WithModelFactory(<span class="string">'bookModel'</span>)(BookComments);</span><br></pre></td></tr></table></figure>
+<p>看上去是不是有点像<code>Redux</code>，它确实用了相似的设计：<code>全局状态</code>，<code>状态注入</code>。</p>
+<p>这个设计比2.0又进了一大步，它还可以继续优化，我们可以使用<code>Reducer</code>、<code>Context</code>等等，继续设计下去，就会越来越接近<code>Hooks Redux</code>了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>到这里，我们已经从一个简单Hooks组件，进化为一个高阶组件工厂了，而且还有全局状态管理。用到了几种设计模式：装饰器模式(高阶函数，高阶组件其实就是装饰器)，工厂模式，单例模式(全局状态仓库)；</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#高阶组件的定义"><span class="toc-text">高阶组件的定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#高阶组件的用途"><span class="toc-text">高阶组件的用途</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#方案1-0-简单直接"><span class="toc-text">方案1.0 - 简单直接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方案2-0-高阶组件"><span class="toc-text">方案2.0 - 高阶组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#方案3-0-高阶组件工厂"><span class="toc-text">方案3.0 - 高阶组件工厂</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+
+  
+
+  
+    <a href="/2020/01/05/Node-js-TypeScript-开发服务端是什么样的体验/" class="next">下一篇 Node.js + TypeScript 开发服务端是什么样的体验 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,380 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="断言函数试试看
+有一类特定的函数，在非预期结果出现时会抛出一个错误。这类函数就叫做断言函数。例如，Node.js 有一个专用的断言函数叫 assert。
+1assert(someValue === 42);
+在这个示例中，如果 someValue 不等于 42，那么 assert 就会抛出一个 AssertionError。
+JavaScript 中的断言经常用于确保传入的是正确的类型。比如...">
+  
+  <title>TypeScript 3.7 - 断言函数 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2020/01/04/函数式编程探索-二-函数式编程与面向对象编程/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        函数式编程探索(二) - 函数式编程与面向对象编程
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/11/05/函数式编程探索-一-《JS函数式编程指南》读后感/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        函数式编程探索(一) -《JS函数式编程指南》读后感
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>TypeScript 3.7 - 断言函数</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-12-01</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="断言函数"><a href="#断言函数" class="headerlink" title="断言函数"></a>断言函数</h2><p><a href="https://www.typescriptlang.org/play/#example/assertion-functions" target="_blank" rel="noopener">试试看</a></p>
+<p>有一类特定的函数，在非预期结果出现时会抛出一个错误。<br>这类函数就叫做断言函数。<br>例如，Node.js 有一个专用的断言函数叫 <code>assert</code>。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">assert(someValue === <span class="number">42</span>);</span><br></pre></td></tr></table></figure>
+<p>在这个示例中，如果 <code>someValue</code> 不等于 <code>42</code>，那么 <code>assert</code> 就会抛出一个 <code>AssertionError</code>。</p>
+<p>JavaScript 中的断言经常用于确保传入的是正确的类型。<br>比如，</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">multiply</span>(<span class="params">x, y</span>) </span>&#123;</span><br><span class="line">  assert(<span class="keyword">typeof</span> x === <span class="string">'number'</span>);</span><br><span class="line">  assert(<span class="keyword">typeof</span> y === <span class="string">'number'</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> x * y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不幸的是，TypeScript 中的这些检查从来不会被正确的编写。<br>对于弱类型的写法，意味着 TypeScript 不会严格检查，而对于稍微规范一些的写法，一般要求使用者添加类型断言。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">yell</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  assert(<span class="keyword">typeof</span> str === <span class="string">'string'</span>);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> str.toUppercase();</span><br><span class="line">  <span class="comment">// 哎呀！我们错误地拼写了 'toUpperCase'</span></span><br><span class="line">  <span class="comment">// 如果 TypeScript 依然能捕获问题，那就太棒了！</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里有可供选择的替代写法，可以让编程语言分析出问题，不过并不方便。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">yell</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> str !== <span class="string">'string'</span>) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'str should have been a string.'</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 错误被捕获！</span></span><br><span class="line">  <span class="keyword">return</span> str.toUppercase();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>TypeScript 最基本的目标就是用最友好的方式去对现有的 JavaScript 结构做类型分析。<br>基于这个原因，TypeScript 3.7 引入了一个新的概念叫“断言签名(assertion signatures)”，用来模拟这些断言函数。</p>
+<p>第一种断言签名，模拟 Node 中的 <code>assert</code> 函数的功能。<br>它确保在断言的范围内，断言条件必须为 <code>true</code>。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">assert</span>(<span class="params">condition: <span class="built_in">any</span>, msg?: <span class="built_in">string</span></span>): <span class="title">asserts</span> <span class="title">condition</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!condition) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError(msg)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>断言条件</code> 说的是，如果 <code>assert</code> 返回了，<code>condition</code> 参数得到的传入值必须为 <code>true</code>，因为如果不是这样，它肯定会抛出一个错误。<br>这意味着，在断言的范围内，这个条件一定是正确的。<br>举一个例子，用这个断言函数意味着我们可以实现捕获我们之前的 <code>yell</code> 示例的错误。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">yell</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">    assert(<span class="keyword">typeof</span> str === <span class="string">"string"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> str.toUppercase();</span><br><span class="line">    <span class="comment">//         ~~~~~~~~~~~</span></span><br><span class="line">    <span class="comment">// error: Property 'toUppercase' does not exist on type 'string'.</span></span><br><span class="line">    <span class="comment">//        Did you mean 'toUpperCase'?</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">assert</span>(<span class="params">condition: <span class="built_in">any</span>, msg?: <span class="built_in">string</span></span>): <span class="title">asserts</span> <span class="title">condition</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!condition) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError(msg)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外一种断言签名不是用来校验一个条件，而是告诉 TypeScript 某个变量或属性有不同的类型。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">assertIsString</span>(<span class="params">val: <span class="built_in">any</span></span>): <span class="title">asserts</span> <span class="title">val</span> <span class="title">is</span> <span class="title">string</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> val !== <span class="string">"string"</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError(<span class="string">"Not a string!"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里 <code>asserts val is string</code> 保证在 <code>assertIsString</code> 调用之后, 任何传入的变量将被认为是一个 <code>string</code>.</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">yell</span>(<span class="params">str: <span class="built_in">any</span></span>) </span>&#123;</span><br><span class="line">  assertIsString(str);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 现在 TypeScript 知道了，'str' 是一个 'string'。</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> str.toUppercase();</span><br><span class="line">  <span class="comment">//         ~~~~~~~~~~~</span></span><br><span class="line">  <span class="comment">// error: Property 'toUppercase' does not exist on type 'string'.</span></span><br><span class="line">  <span class="comment">//        Did you mean 'toUpperCase'?</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里的断言签名非常类似于类型断言签名：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isString</span>(<span class="params">val: <span class="built_in">any</span></span>): <span class="title">val</span> <span class="title">is</span> <span class="title">string</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">typeof</span> val === <span class="string">'string'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">yell</span>(<span class="params">str: <span class="built_in">any</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (isString(str)) &#123;</span><br><span class="line">    <span class="keyword">return</span> str.toUppercase();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">throw</span> <span class="string">'Oops!'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>就像类型断言签名一样，这些断言签名是非常神奇的。<br>我们可以用它们实现一些非常复杂的想法和设计。</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">assertIsDefined</span>&lt;<span class="title">T</span>&gt;(<span class="params">val: T</span>): <span class="title">asserts</span> <span class="title">val</span> <span class="title">is</span> <span class="title">NonNullable</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (val === <span class="literal">undefined</span> || val === <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError(</span><br><span class="line">            <span class="string">`Expected 'val' to be defined, but received <span class="subst">$&#123;val&#125;</span>`</span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>想阅读更多断言签名相关内容， <a href="https://github.com/microsoft/TypeScript/pull/32695" target="_blank" rel="noopener">签出原始的 pull request</a>.</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#断言函数"><span class="toc-text">断言函数</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2020/01/04/函数式编程探索-二-函数式编程与面向对象编程/" class="prev">&larr; 上一篇 函数式编程探索(二) - 函数式编程与面向对象编程</a>
+  
+
+  
+
+  
+    <a href="/2019/11/05/函数式编程探索-一-《JS函数式编程指南》读后感/" class="next">下一篇 函数式编程探索(一) -《JS函数式编程指南》读后感 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

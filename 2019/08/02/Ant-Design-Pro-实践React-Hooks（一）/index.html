@@ -1,0 +1,411 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="背景React Hooks目前是React社区最炙手可热的新技术，我们准备追一下热度，在当前的项目中实践一下Hooks技术。我们的项目使用的脚手架是Ant Design Pro 2.0，初步想法是把现有的一个有状态页面组件重构成Hooks函数组件。
+设计动手之前，先理一下思路，用Hook函数重构的话，需要调整哪些部分：
+
+组件类要拆解成Hooks函数
+组件状态改成Hooks状态
+类属性改成H...">
+  
+  <title>Ant Design Pro-实践React Hooks（一） [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/08/09/Ant-Design-Pro-实践React-Hooks-组件/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Ant Design Pro - 实践React Hooks - 组件
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/07/23/TypeScript学习6-函数/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习6-函数
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Ant Design Pro-实践React Hooks（一）</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-08-02</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/React/">React</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/React-Hooks/">React Hooks</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Ant-Design/">Ant Design</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>React Hooks目前是React社区最炙手可热的新技术，我们准备追一下热度，在当前的项目中实践一下Hooks技术。<br>我们的项目使用的脚手架是Ant Design Pro 2.0，初步想法是把现有的一个有状态页面组件重构成Hooks函数组件。</p>
+<h2 id="设计"><a href="#设计" class="headerlink" title="设计"></a>设计</h2><p>动手之前，先理一下思路，用Hook函数重构的话，需要调整哪些部分：</p>
+<ul>
+<li>组件类要拆解成Hooks函数</li>
+<li>组件状态改成Hooks状态</li>
+<li>类属性改成Hooks函数本地变量</li>
+<li>类方法改成Hooks函数的嵌套函数，可公用的也可以作为Hooks函数平级的函数</li>
+</ul>
+<p>再理一下过程中的问题：</p>
+<ul>
+<li>函数和类不一样，它的this是由调用方决定的，是不确定的，所以不要使用this（<strong>Hooks函数里面也没必要用this</strong>）。</li>
+<li>没有this，就需要用传参了，Hooks函数就是props转递。</li>
+<li><strong>Dva的使用</strong>，Ant Design Pro使用的Dva来管理数据（里面封装的是Redux），这里我们还是可以继续使用，通过connect把Redux管理的model数据注入props。<blockquote>
+<p>这里有个小知识点，组件类的model注入，使用了注解形式的装饰器，函数是不能使用装饰器的，所以需要我们手工注入。<strong>理解一点：这里的装饰器就是高阶函数</strong>。</p>
+</blockquote>
+</li>
+<li><strong>状态共享</strong>，Hooks状态如何共享给其他Hooks函数或普通函数？<strong>Hooks状态声明时会返回：状态、修改此状态的方法，这两个返回值是可以传递和共享的</strong>。<blockquote>
+<p>这里也补充一个小知识，我们是可以声明一个服务类的Hooks，然后把状态和状态修改器返回来，这个是可以共享和传递的，可以实现类似全局状态管理器的功能，Hooks也提供了额外的辅助方法：useReducer。这里可以深入去学习一下。</p>
+</blockquote>
+</li>
+</ul>
+<p>解决了这些问题，我们就可以实践了。</p>
+<h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>我们拆成了两个Hooks组件：分页列表 + 查询表单，来看看最终实现的代码。</p>
+<h3 id="入口-分页列表Hooks组件"><a href="#入口-分页列表Hooks组件" class="headerlink" title="入口 - 分页列表Hooks组件"></a>入口 - 分页列表Hooks组件</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">TableList</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;</span><br><span class="line">    dispatch,</span><br><span class="line">    account: &#123; accountList &#125;,</span><br><span class="line">    loading,</span><br><span class="line">  &#125; = props;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> [formValues, setFormValues] = useState(&#123;&#125;);</span><br><span class="line">  <span class="keyword">const</span> [selectedRows] = useState([]);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">const</span> columns = [</span><br><span class="line">    &#123;</span><br><span class="line">      title: <span class="string">'序号'</span>,</span><br><span class="line">      dataIndex: <span class="string">'_index'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      title: <span class="string">'账户名称'</span>,</span><br><span class="line">      dataIndex: <span class="string">'accountName'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">  ];</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">handleSearch</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">    e &amp;&amp; e.preventDefault();</span><br><span class="line">    <span class="keyword">const</span> &#123; form &#125; = props;</span><br><span class="line"></span><br><span class="line">    form.validateFields(<span class="function">(<span class="params">err, fieldsValue</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (err) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">      dispatch(&#123;</span><br><span class="line">        type: <span class="string">'account/accountList'</span>,</span><br><span class="line">        payload: fieldsValue,</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">handleStandardTableChange</span>(<span class="params">pagination, filtersArg, sorter</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> filters = <span class="built_in">Object</span>.keys(filtersArg).reduce(<span class="function">(<span class="params">obj, key</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> newObj = &#123; ...obj &#125;;</span><br><span class="line">      newObj[key] = getValue(filtersArg[key]);</span><br><span class="line">      <span class="keyword">return</span> newObj;</span><br><span class="line">    &#125;, &#123;&#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> params = &#123;</span><br><span class="line">      pageNumber: pagination.current,</span><br><span class="line">      pageSize: pagination.pageSize,</span><br><span class="line">      ...formValues,</span><br><span class="line">      ...filters,</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">if</span> (sorter.field) &#123;</span><br><span class="line">      params.sort = sorter.order === <span class="string">'ascend'</span> ? <span class="string">'asc'</span> : <span class="string">'desc'</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dispatch(&#123;</span><br><span class="line">      type: <span class="string">'account/accountList'</span>,</span><br><span class="line">      payload: params,</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  useEffect(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    dispatch(&#123;</span><br><span class="line">      type: <span class="string">'account/clear'</span>,</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="comment">// 自动查询</span></span><br><span class="line">    handleSearch();</span><br><span class="line">  &#125;, []);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;PageHeaderWrapper&gt;</span><br><span class="line">      &lt;Card bordered=&#123;<span class="literal">false</span>&#125;&gt;</span><br><span class="line">        &lt;div className=&#123;styles.tableList&#125;&gt;</span><br><span class="line">          &lt;div className=&#123;styles.tableListForm&#125;&gt;</span><br><span class="line">            &lt;SearchForm formValues=&#123;formValues&#125; handleSearch=&#123;handleSearch&#125; &#123;...props&#125; /&gt;</span><br><span class="line">          &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">          &lt;StandardTable</span></span><br><span class="line"><span class="regexp">            loading=&#123;loading&#125;</span></span><br><span class="line"><span class="regexp">            data=&#123;accountList&#125;</span></span><br><span class="line"><span class="regexp">            columns=&#123;columns&#125;</span></span><br><span class="line"><span class="regexp">            rowKey="_index"</span></span><br><span class="line"><span class="regexp">            selectedRows=&#123;selectedRows&#125;</span></span><br><span class="line"><span class="regexp">            hideAlert</span></span><br><span class="line"><span class="regexp">            disablePagination=&#123;false&#125;</span></span><br><span class="line"><span class="regexp">            onChange=&#123;handleStandardTableChange&#125;</span></span><br><span class="line"><span class="regexp">          /</span>&gt;</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>Card&gt;</span><br><span class="line">    &lt;<span class="regexp">/PageHeaderWrapper&gt;</span></span><br><span class="line"><span class="regexp">  );</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">const tableList = connect((&#123; accountaging, loading &#125;) =&gt; (&#123;</span></span><br><span class="line"><span class="regexp">  accountaging,</span></span><br><span class="line"><span class="regexp">  loading: loading.models.accountaging,</span></span><br><span class="line"><span class="regexp">&#125;))(Form.create()(TableList));</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">export default tableList;</span></span><br></pre></td></tr></table></figure>
+<p>这里我们注意几个点：</p>
+<ul>
+<li>props我们是透传给列表查询表单的。</li>
+<li>查询方法也是传过去的。</li>
+<li>存放表单值的状态是声明在列表组件，传给表单组件。</li>
+<li>这里的userEffect实现了之前ComponentDisMount的功能，注意：<strong>依赖传入了一个空数组，这里表示不依赖任何状态，所以只会在初次加载时执行，否则会出现死循环</strong>。</li>
+<li>组件导出前，有个model和form的注入。</li>
+</ul>
+<h3 id="列表查询表单"><a href="#列表查询表单" class="headerlink" title="列表查询表单"></a>列表查询表单</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">SearchForm</span>(<span class="params">props</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> &#123;</span><br><span class="line">    account: &#123; accountList &#125;,</span><br><span class="line">    form,</span><br><span class="line">    formValues,</span><br><span class="line">    handleSearch,</span><br><span class="line">  &#125; = props;</span><br><span class="line">  <span class="keyword">const</span> &#123; getFieldDecorator &#125; = form;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    &lt;Form onSubmit=&#123;handleSearch&#125; layout=<span class="string">"inline"</span>&gt;</span><br><span class="line">      &lt;Row gutter=&#123;<span class="number">16</span>&#125; justify=<span class="string">"start"</span>&gt;</span><br><span class="line">        &lt;Col xl=&#123;<span class="number">8</span>&#125; md=&#123;<span class="number">12</span>&#125; sm=&#123;<span class="number">24</span>&#125;&gt;</span><br><span class="line">          &lt;FormItem labelCol=&#123;&#123; <span class="attr">span</span>: <span class="number">6</span> &#125;&#125; wrapperCol=&#123;&#123; <span class="attr">span</span>: <span class="number">16</span> &#125;&#125; label=<span class="string">"账户名称"</span>&gt;</span><br><span class="line">            &#123;getFieldDecorator(<span class="string">'accountName'</span>, &#123;</span><br><span class="line">              initialValue: <span class="string">''</span>,</span><br><span class="line">            &#125;)(&lt;Input placeholder="账户名称" /&gt;)&#125;</span><br><span class="line">          &lt;<span class="regexp">/FormItem&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>Col&gt;</span><br><span class="line">        &lt;Col xl=&#123;<span class="number">8</span>&#125; md=&#123;<span class="number">24</span>&#125;&gt;</span><br><span class="line">          &lt;Button className=<span class="string">"fun-button"</span> type=<span class="string">"primary"</span> htmlType=<span class="string">"submit"</span>&gt;</span><br><span class="line">            查询</span><br><span class="line">          &lt;<span class="regexp">/Button&gt;</span></span><br><span class="line"><span class="regexp">        &lt;/</span>Col&gt;</span><br><span class="line">      &lt;<span class="regexp">/Row&gt;</span></span><br><span class="line"><span class="regexp">    &lt;/</span>Form&gt;</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>表单组件这块，东西不多，理解props就好。</p>
+<h2 id="想法"><a href="#想法" class="headerlink" title="想法"></a>想法</h2><p>其实整个实现下来，并不难。但是还有些问题需要我们考虑一下：</p>
+<ul>
+<li>使用Hooks之后，带来了哪些改变？</li>
+<li>代码逻辑是不是更优了？</li>
+<li>代码结构是否清晰？</li>
+<li>什么样是最佳实践？</li>
+</ul>
+<p>留待讨论。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计"><span class="toc-text">设计</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-text">实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#入口-分页列表Hooks组件"><span class="toc-text">入口 - 分页列表Hooks组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列表查询表单"><span class="toc-text">列表查询表单</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#想法"><span class="toc-text">想法</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/08/09/Ant-Design-Pro-实践React-Hooks-组件/" class="prev">&larr; 上一篇 Ant Design Pro - 实践React Hooks - 组件</a>
+  
+
+  
+
+  
+    <a href="/2019/07/23/TypeScript学习6-函数/" class="next">下一篇 TypeScript学习6-函数 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

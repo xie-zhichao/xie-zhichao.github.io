@@ -1,0 +1,365 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="需求场景  用Excel做数据表格时，我们常常用到一个功能：冻结。冻结可以实现表头固定，这样，下拉查看数据时，依然可以对应上表头的标题。Web页面的Table数据表，同样会有类似的需求，目前解决方案有几种：
+双层table  比较常见的是：使用两个table，上面一个table只做表头，下面一个table做数据展示。两个table的列宽需要匹配，包括滚动条的列宽，常见的是用来处理（用div也...">
+  
+  <title>使用transform动画实现表头固定 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2018/01/22/Java-Enum枚举类实践/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Java Enum枚举类实践
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2017/12/04/单元测试探索/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        单元测试探索
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>使用transform动画实现表头固定</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2018-01-05</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/CSS/">CSS</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/CSS/">CSS</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/transform/">transform</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="需求场景"><a href="#需求场景" class="headerlink" title="需求场景"></a>需求场景</h2><p>  用Excel做数据表格时，我们常常用到一个功能：冻结。冻结可以实现表头固定，这样，下拉查看数据时，依然可以对应上表头的标题。<br>Web页面的Table数据表，同样会有类似的需求，目前解决方案有几种：</p>
+<h3 id="双层table"><a href="#双层table" class="headerlink" title="双层table"></a>双层table</h3><p>  比较常见的是：使用两个table，上面一个table只做表头，下面一个table做数据展示。两个table的列宽需要匹配，包括滚动条的列宽，常见的是用<colgroup>来处理（用div也是可行的，样式处理复杂一点），最后一列是滚动条宽度。<br>. table1<br>    <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">    <span class="tag">&lt;<span class="name">colgroup</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">col</span> <span class="attr">width</span>=<span class="string">"50"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">col</span> <span class="attr">width</span>=<span class="string">"100"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">col</span> <span class="attr">width</span>=<span class="string">"150"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">col</span> <span class="attr">width</span>=<span class="string">"17"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">colgroup</span>&gt;</span> </span><br><span class="line">    ```	</span><br><span class="line"></span><br><span class="line">. table2</span><br><span class="line">    ``` html</span><br><span class="line">    <span class="tag">&lt;<span class="name">colgroup</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">col</span> <span class="attr">width</span>=<span class="string">"50"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">col</span> <span class="attr">width</span>=<span class="string">"100"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">col</span> <span class="attr">width</span>=<span class="string">"150"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">col</span> <span class="attr">width</span>=<span class="string">"17"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">colgroup</span>&gt;</span></span><br></pre></td></tr></table></figure></colgroup></p>
+<p>  这方式的缺点是：</p>
+<pre><code>- 宽度必须固定，动态适应的话，需用js去处理
+- 历史代码改造工作量会比较大
+</code></pre><h3 id="transform动画"><a href="#transform动画" class="headerlink" title="transform动画"></a>transform动画</h3><p>  这里介绍一个更为灵活一点的实现方案：transform动画，监控滚动事件，根据滚动距离，移动表头。<br>  参考项目：<a href="https://github.com/KenyeeC/eleFixed" target="_blank" rel="noopener">https://github.com/KenyeeC/eleFixed</a></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">trigger.addEventListener(<span class="string">'scroll'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> event_ = event || <span class="built_in">window</span>.event;</span><br><span class="line">    <span class="keyword">var</span> evtTarget = event_.target || event_.srcElement;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> offsetTop = evtTarget.scrollTop;</span><br><span class="line">    <span class="keyword">var</span> translate;</span><br><span class="line">    <span class="keyword">if</span>(offsetTop &gt; offsetTop_)&#123;</span><br><span class="line">        translate = <span class="string">'translate(0px, '</span>+(offsetTop - offsetTop_)+<span class="string">'px)'</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        translate = <span class="string">'translate(0px, 0px)'</span>;                    </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> translateCss = &#123;</span><br><span class="line">        <span class="string">'-webkit-transform'</span>: translate,</span><br><span class="line">        <span class="string">'-moz-transform'</span>: translate,</span><br><span class="line">        <span class="string">'-ms-transform'</span>: translate,</span><br><span class="line">        <span class="string">'-o-transform'</span>: translate</span><br><span class="line">    &#125;;</span><br><span class="line">    timerHandler &amp;&amp; clearTimeout(timerHandler);</span><br><span class="line">    timerHandler = setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        $(target).find(<span class="string">'tr th'</span>).css(translateCss);</span><br><span class="line">    &#125;, <span class="number">100</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这里有几点需要关注：</p>
+<ul>
+<li>transform兼容性，兼容chrome，firefox比较简单，带前缀。ie给<thead>设置动画时无效，必须需要给<th>设置</th></thead></li>
+<li>firefox，ie会有闪烁，可以设置一个时延</li>
+</ul>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#需求场景"><span class="toc-text">需求场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#双层table"><span class="toc-text">双层table</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#transform动画"><span class="toc-text">transform动画</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2018/01/22/Java-Enum枚举类实践/" class="prev">&larr; 上一篇 Java Enum枚举类实践</a>
+  
+
+  
+
+  
+    <a href="/2017/12/04/单元测试探索/" class="next">下一篇 单元测试探索 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

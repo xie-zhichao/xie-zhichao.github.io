@@ -1,0 +1,388 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="引言TypeScript中的函数和JavaScript中的函数，和其他特性相比，是相差不大的。这里会补充一点进阶知识。
+函数相关的知识点下面列举一些TypeScript中函数相关的知识点。
+类型声明TypeScript中的函数定义，需要声明参数和返回值的类型。123456// function addfunction add(x: number, y: number): number &#1...">
+  
+  <title>TypeScript学习6-函数 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/08/02/Ant-Design-Pro-实践React-Hooks（一）/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Ant Design Pro-实践React Hooks（一）
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/07/18/TypeScript学习5-接口与类的应用/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习5-接口与类的应用
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>TypeScript学习6-函数</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-07-23</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>TypeScript中的函数和JavaScript中的函数，和其他特性相比，是相差不大的。<br>这里会补充一点进阶知识。</p>
+<h2 id="函数相关的知识点"><a href="#函数相关的知识点" class="headerlink" title="函数相关的知识点"></a>函数相关的知识点</h2><p>下面列举一些TypeScript中函数相关的知识点。</p>
+<h3 id="类型声明"><a href="#类型声明" class="headerlink" title="类型声明"></a>类型声明</h3><p>TypeScript中的函数定义，需要声明参数和返回值的类型。<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// function add</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">x: <span class="built_in">number</span>, y: <span class="built_in">number</span></span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x + y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// arrow funtion add</span></span><br><span class="line"><span class="keyword">const</span> add = <span class="function">(<span class="params">x: <span class="built_in">number</span>, y: <span class="built_in">number</span></span>) =&gt;</span> x + y;</span><br></pre></td></tr></table></figure></p>
+<p>上面是两种基本用法：普通函数定义、箭头函数定义。<br>其中隐藏有一个点：<strong>类型推断</strong>，箭头函数没有声明返回值类型，这里编译器不会报错，因为它可以推断出返回值类型。这个特性，在数据类型学习的时候也接触过，规则也是类似的：<strong>能推断出类型的，不需要显示声明</strong>。</p>
+<h3 id="可选参数和参数默认值"><a href="#可选参数和参数默认值" class="headerlink" title="可选参数和参数默认值"></a>可选参数和参数默认值</h3><p>这两个特性实际使用的时候是很有用的，很清晰，也省掉不少代码。<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// function log</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myLog</span>(<span class="params">message: <span class="built_in">string</span>,  level: (<span class="string">'info'</span> | <span class="string">'warn'</span> | <span class="string">'error'</span>) = 'info', prefix?: <span class="built_in">string</span></span>): <span class="title">void</span> </span>&#123;</span><br><span class="line">  <span class="comment">// todo, logging</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里：</p>
+<ul>
+<li>level参数是有一个默认值的</li>
+<li>prefix参数是可选的<br>注意一点：<strong>可选参数必须放最后</strong></li>
+</ul>
+<h3 id="剩余参数"><a href="#剩余参数" class="headerlink" title="剩余参数"></a>剩余参数</h3><p>剩余参数就是，剩余的其他参数，这里用到了结构，看示例。<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myCallback</span>(<span class="params">status: <span class="built_in">boolean</span>, ...restData: <span class="built_in">any</span>[]</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`<span class="subst">$&#123;status&#125;</span>: <span class="subst">$&#123;restData.join()&#125;</span>`</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">myCallback(<span class="literal">false</span>);</span><br><span class="line">myCallback(<span class="literal">true</span>, <span class="string">'完成一个'</span>);</span><br><span class="line">myCallback(<span class="literal">true</span>, <span class="string">'完成第一个'</span>, <span class="string">'完成第二个'</span>);</span><br></pre></td></tr></table></figure></p>
+<p>剩余参数使用起来非常灵活。</p>
+<h2 id="进阶知识点"><a href="#进阶知识点" class="headerlink" title="进阶知识点"></a>进阶知识点</h2><h3 id="this指向"><a href="#this指向" class="headerlink" title="this指向"></a>this指向</h3><p>JavaScript中的this是个入门的难点，JavaScript函数的this是和调用上下文直接相关的，和定义不相关，所以很容易出现this指向和预期不一致的问题。  </p>
+<p>目前有几种解决方案：this绑定、箭头函数、闭包。  </p>
+<h4 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h4><p>箭头函数的出现，可以缓解了这个难题。箭头函数中的this，是和定义的上下文相关（<strong>底层是利用闭包实现的</strong>），如下例：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> myLottery = &#123;</span><br><span class="line">  prizes: [<span class="string">'pen'</span>, <span class="string">'pencil'</span>, <span class="string">'notebook'</span>, <span class="string">'dictionary'</span>],</span><br><span class="line">  getDraw: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function">(<span class="params">name: <span class="built_in">string</span></span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">const</span> result = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">4</span>);</span><br><span class="line">      <span class="keyword">return</span> <span class="string">`Bingo, <span class="subst">$&#123;name&#125;</span>, you win the <span class="subst">$&#123;<span class="keyword">this</span>.prizes[result]&#125;</span>!`</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> myDraw = myLottery.getDraw();</span><br><span class="line"><span class="built_in">console</span>.log(myDraw(<span class="string">'Tom'</span>));</span><br></pre></td></tr></table></figure>
+<h4 id="闭包实现"><a href="#闭包实现" class="headerlink" title="闭包实现"></a>闭包实现</h4><p>闭包方案就是在函数上下文中把this保存在变量中。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">getDraw: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> _this = <span class="keyword">this</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params">name: <span class="built_in">string</span></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> result = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">4</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">`Bingo, <span class="subst">$&#123;name&#125;</span>, you win the <span class="subst">$&#123;_this.prizes[result]&#125;</span>!`</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h4 id="bind绑定"><a href="#bind绑定" class="headerlink" title="bind绑定"></a>bind绑定</h4><p>bind绑定在TypeScript里面会麻烦一点，需要声明this类型，否则编译不过，提示this类型不确定。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Lottery &#123;</span><br><span class="line">  prizes: <span class="built_in">string</span>[];</span><br><span class="line">  getDraw(): &#123;(name: <span class="built_in">string</span>): <span class="built_in">string</span>&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> myLottery: Lottery = &#123;</span><br><span class="line">  prizes: [<span class="string">'pen'</span>, <span class="string">'pencil'</span>, <span class="string">'notebook'</span>, <span class="string">'dictionary'</span>],</span><br><span class="line">  getDraw: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"><span class="keyword">this</span>: Lottery, name: <span class="built_in">string</span></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">const</span> result = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.random() * <span class="number">4</span>);</span><br><span class="line">      <span class="keyword">return</span> <span class="string">`Bingo, <span class="subst">$&#123;name&#125;</span>, you win the <span class="subst">$&#123;<span class="keyword">this</span>.prizes[result]&#125;</span>!`</span>;</span><br><span class="line">    &#125;.bind(<span class="keyword">this</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> myDraw = myLottery.getDraw();</span><br><span class="line"><span class="built_in">console</span>.log(myDraw(<span class="string">'Tom'</span>));</span><br></pre></td></tr></table></figure>
+<h3 id="函数重载"><a href="#函数重载" class="headerlink" title="函数重载"></a>函数重载</h3><p>TypeScript的重载，我是感觉有点牵强的，如下示例：</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myAdd</span>(<span class="params">x: <span class="built_in">number</span>, y: <span class="built_in">number</span></span>): <span class="title">number</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myAdd</span>(<span class="params">x: <span class="built_in">string</span>, y: <span class="built_in">string</span></span>): <span class="title">string</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myAdd</span>(<span class="params">x, y</span>): <span class="title">any</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">typeof</span> x === <span class="string">'number'</span> &amp;&amp; <span class="keyword">typeof</span> y === <span class="string">'number'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> x + y;</span><br><span class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> x === <span class="string">'string'</span> &amp;&amp; <span class="keyword">typeof</span> y === <span class="string">'string'</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> x + y;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">myAdd(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">myAdd(<span class="string">'Hello'</span>, <span class="string">'world'</span>);</span><br></pre></td></tr></table></figure>
+<p>这种实现，其实就是动态参数的分支处理，好处是代码提示比较友好，能识别出来重载。</p>
+<blockquote>
+<p>无法实现类似静态语言的重载的原因之前也提过：静态语言，如Java，函数重载，是生成了多个不同名的函数，同时使用的地方也会被更新成对应的函数名。TypeScript要兼容JavaScript，这个就无法实现。</p>
+</blockquote>
+<h3 id="高阶函数"><a href="#高阶函数" class="headerlink" title="高阶函数"></a>高阶函数</h3><p>高阶函数听起来很高大上，其实概念并不难：<strong>参数是函数或返回值是函数的函数</strong>。  </p>
+<p>我们接触比较多的比如，数组内置的map方法。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 数组元素自增</span></span><br><span class="line"><span class="keyword">let</span> arr  = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 传统方式</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">    arr[i]++;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// map</span></span><br><span class="line">arr = arr.map(<span class="function"><span class="keyword">function</span>(<span class="params">item</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> item + <span class="number">1</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结合箭头函数</span></span><br><span class="line">arr = arr.map(<span class="function"><span class="params">item</span> =&gt;</span> item + <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<p>下面再学一个复杂一点的案例，前置处理器。比如，我们要在请求数据之前，记录一些日志。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> Request &#123;</span><br><span class="line">  (url: <span class="built_in">string</span>, options: &#123;[key: <span class="built_in">string</span>]: <span class="built_in">any</span>&#125;): <span class="built_in">Promise</span>&lt;<span class="built_in">any</span>&gt;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">withLog</span>(<span class="params">func: Request</span>): <span class="title">Request</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">url: <span class="built_in">string</span>, options: &#123;[key: <span class="built_in">string</span>]: <span class="built_in">any</span>&#125;</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'request'</span>);</span><br><span class="line">    <span class="keyword">return</span> func(url, options);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myRequest</span>(<span class="params">url: <span class="built_in">string</span>, options: &#123;[key: <span class="built_in">string</span>]: <span class="built_in">any</span>&#125;</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        resolve(<span class="string">'completed!'</span>)   </span><br><span class="line">      &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">withLog(myRequest)(<span class="string">'/a'</span>, &#123;method: <span class="string">'post'</span>&#125;).then(<span class="function"><span class="params">val</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(val);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>上述方案就是把请求函数通过另外一个函数包装成一个新的函数。</p>
+<p>再复杂一点，像这样，参数是函数，返回值也是函数的，是可以无限嵌套的，每嵌套一次，它就多了一个功能。这在很多框架里面特别常见，用于抽象和解耦。</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">withLog2</span>(<span class="params">func: Request</span>): <span class="title">Request</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">url: <span class="built_in">string</span>, options: &#123;[key: <span class="built_in">string</span>]: <span class="built_in">any</span>&#125;</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> func(url, options).then(<span class="function"><span class="params">val</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="string">`[<span class="subst">$&#123;val&#125;</span>]`</span>;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">withLog2(withLog(myRequest))(<span class="string">'/a'</span>, &#123;method: <span class="string">'post'</span>&#125;).then(<span class="function"><span class="params">val</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(val);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#函数相关的知识点"><span class="toc-text">函数相关的知识点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#类型声明"><span class="toc-text">类型声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#可选参数和参数默认值"><span class="toc-text">可选参数和参数默认值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#剩余参数"><span class="toc-text">剩余参数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#进阶知识点"><span class="toc-text">进阶知识点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#this指向"><span class="toc-text">this指向</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#箭头函数"><span class="toc-text">箭头函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#闭包实现"><span class="toc-text">闭包实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#bind绑定"><span class="toc-text">bind绑定</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数重载"><span class="toc-text">函数重载</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高阶函数"><span class="toc-text">高阶函数</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/08/02/Ant-Design-Pro-实践React-Hooks（一）/" class="prev">&larr; 上一篇 Ant Design Pro-实践React Hooks（一）</a>
+  
+
+  
+
+  
+    <a href="/2019/07/18/TypeScript学习5-接口与类的应用/" class="next">下一篇 TypeScript学习5-接口与类的应用 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

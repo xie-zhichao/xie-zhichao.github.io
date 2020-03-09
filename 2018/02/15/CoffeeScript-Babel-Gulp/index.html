@@ -1,0 +1,373 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="为什么是这个组合如果你喜欢CoffeeScript，那么CoffeeScript+Babel+Gulp的组合可以提供一个CoffeeScript的开发环境，支持ES6的语法标准，使用node命令编译打包。
+相关技术介绍CoffeeScriptCoffeeScript是一套JavaScript的转译语言，提供了许多借鉴于Ruby的语法糖，好处可以总结几点：
+
+提供语法糖，代码结构更简洁、优雅，...">
+  
+  <title>CoffeeScript+Babel+Gulp [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2018/03/10/Js逻辑运算和位运算的解析/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Js逻辑运算&&,||和位运算&,|的解析
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2018/01/25/Java多线程下写同一个变量/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Java多线程下写同一个变量
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>CoffeeScript+Babel+Gulp</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2018-02-15</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/CoffeeScript/">CoffeeScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/CoffeeScript/">CoffeeScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Babel/">Babel</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Gulp/">Gulp</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="为什么是这个组合"><a href="#为什么是这个组合" class="headerlink" title="为什么是这个组合"></a>为什么是这个组合</h2><p>如果你喜欢CoffeeScript，那么CoffeeScript+Babel+Gulp的组合可以提供一个CoffeeScript的开发环境，支持ES6的语法标准，使用node命令编译打包。</p>
+<h2 id="相关技术介绍"><a href="#相关技术介绍" class="headerlink" title="相关技术介绍"></a>相关技术介绍</h2><h3 id="CoffeeScript"><a href="#CoffeeScript" class="headerlink" title="CoffeeScript"></a>CoffeeScript</h3><p>CoffeeScript是一套JavaScript的转译语言，提供了许多借鉴于Ruby的语法糖，好处可以总结几点：</p>
+<ul>
+<li>提供语法糖，代码结构更简洁、优雅，语法更严格，代码量更少</li>
+<li>转译时运用了最佳实践，转译出来的代码在效率上较优<h3 id="Babel"><a href="#Babel" class="headerlink" title="Babel"></a>Babel</h3>JavaScript的语言标准，已经更新到ES6了，语法上有不少的改进，有些改进还是借鉴于CoffeeScript。为了兼容旧标准，Babel可以提供一个运行环境，让我们可以运行ES6标准的js代码。CoffeeScript最近也更了新版本到2.0版，添加了部分ES6的支持。<h3 id="Gulp"><a href="#Gulp" class="headerlink" title="Gulp"></a>Gulp</h3>Gulp是node环境下的一个流式构建工具，为JavaScript工程提供了工程化构建解决方案。</li>
+</ul>
+<h2 id="CoffeeScript-Babel-Gulp组合的相关配置"><a href="#CoffeeScript-Babel-Gulp组合的相关配置" class="headerlink" title="CoffeeScript+Babel+Gulp组合的相关配置"></a>CoffeeScript+Babel+Gulp组合的相关配置</h2><p><strong>package.json</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">"devDependencies"</span>: &#123;</span><br><span class="line">    <span class="string">"babel-core"</span>: <span class="string">"^6.26.0"</span>,</span><br><span class="line">    <span class="string">"babel-preset-env"</span>: <span class="string">"^1.6.1"</span>,</span><br><span class="line">    <span class="string">"gulp"</span>: <span class="string">"^3.9.1"</span>,</span><br><span class="line">    <span class="string">"gulp-babel"</span>: <span class="string">"^7.0.0"</span>,</span><br><span class="line">    <span class="string">"gulp-coffee"</span>: <span class="string">"^3.0.2"</span>,</span><br><span class="line">    <span class="string">"gulp-filter"</span>: <span class="string">"^5.1.0"</span>,</span><br><span class="line">    <span class="string">"gulp-sourcemaps"</span>: <span class="string">"^2.6.4"</span></span><br><span class="line">  &#125;, <span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"build"</span>: <span class="string">"npm install &amp;&amp; gulp build"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>.babelrc</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;  </span><br><span class="line">    <span class="string">"presets"</span>: [  </span><br><span class="line">        [<span class="string">"env"</span>, &#123; <span class="string">"modules"</span>: <span class="literal">false</span> &#125;] </span><br><span class="line">    ],  </span><br><span class="line">    <span class="string">"plugins"</span>: [],</span><br><span class="line">    <span class="string">"ignore"</span>: []  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>gulpfile.js</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> gulp = <span class="built_in">require</span>(<span class="string">'gulp'</span>);</span><br><span class="line"><span class="keyword">const</span> coffee = <span class="built_in">require</span>(<span class="string">'gulp-coffee'</span>);</span><br><span class="line"><span class="keyword">const</span> sourcemaps = <span class="built_in">require</span>(<span class="string">'gulp-sourcemaps'</span>);</span><br><span class="line"><span class="keyword">const</span> filter = <span class="built_in">require</span>(<span class="string">'gulp-filter'</span>);</span><br><span class="line"><span class="keyword">const</span> babel = <span class="built_in">require</span>(<span class="string">"gulp-babel"</span>);</span><br><span class="line"></span><br><span class="line">gulp.task(<span class="string">'build'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> f = filter([<span class="string">'*.js'</span>]);</span><br><span class="line">  gulp.src(<span class="string">'./src/*.coffee'</span>)</span><br><span class="line">    .pipe(sourcemaps.init())</span><br><span class="line">    .pipe(coffee())</span><br><span class="line">    .pipe(babel())</span><br><span class="line">    .pipe(sourcemaps.write(<span class="string">'./maps'</span>))</span><br><span class="line">    .pipe(gulp.dest(<span class="string">'./lib/'</span>));</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>打包： npm run build</p>
+</blockquote>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么是这个组合"><span class="toc-text">为什么是这个组合</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#相关技术介绍"><span class="toc-text">相关技术介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#CoffeeScript"><span class="toc-text">CoffeeScript</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Babel"><span class="toc-text">Babel</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Gulp"><span class="toc-text">Gulp</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CoffeeScript-Babel-Gulp组合的相关配置"><span class="toc-text">CoffeeScript+Babel+Gulp组合的相关配置</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2018/03/10/Js逻辑运算和位运算的解析/" class="prev">&larr; 上一篇 Js逻辑运算&&,||和位运算&,|的解析</a>
+  
+
+  
+
+  
+    <a href="/2018/01/25/Java多线程下写同一个变量/" class="next">下一篇 Java多线程下写同一个变量 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

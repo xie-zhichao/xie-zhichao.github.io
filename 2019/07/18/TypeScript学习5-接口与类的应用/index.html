@@ -1,0 +1,375 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="概述和对比接口和类在实际使用中，一般都是配合使用的。我们来对比一下：
+
+接口可以声明一个类的结构，包含属性和方法，但它只是给出一个声明，没有访问修饰符，没有具体的方法实现，没有构造函数，也不可以被实例化。
+接口是一个对外的协商、约定。继承后才可以实例化，继承的时候必须实现声明。可以多重继承。
+类是也是声明一个类的结构，包含属性和方法，有访问修饰符，有具体的方法实现，有构造函数，可以实例化（抽...">
+  
+  <title>TypeScript学习5-接口与类的应用 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/07/23/TypeScript学习6-函数/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习6-函数
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/06/29/TypeScript学习4-类/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习4-类
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>TypeScript学习5-接口与类的应用</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-07-18</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="概述和对比"><a href="#概述和对比" class="headerlink" title="概述和对比"></a>概述和对比</h2><p>接口和类在实际使用中，一般都是配合使用的。我们来对比一下：</p>
+<ul>
+<li><strong>接口</strong>可以声明一个类的结构，包含属性和方法，但它只是给出一个声明，没有访问修饰符，没有具体的方法实现，没有构造函数，也不可以被实例化。</li>
+<li><strong>接口</strong>是一个对外的协商、约定。继承后才可以实例化，继承的时候必须实现声明。可以多重继承。</li>
+<li><strong>类</strong>是也是声明一个类的结构，包含属性和方法，有访问修饰符，有具体的方法实现，有构造函数，可以实例化（<strong>抽象类下面说</strong>）。继承的时候，可以覆盖，也可以继承使用父类实现。</li>
+<li><strong>抽象类</strong>也是类，不过它可以包含接口类似的特性：普通方法包含实现，抽象方法是不包含实现的；抽象类不能实例化。继承后才可以实例化，继承的时候必须实现抽象声明，其他声明和普通类一样。</li>
+</ul>
+<blockquote>
+<p>补充说明一下，这里的接口、类与纯正的面向对象语言Java比，有一些不同的地方，有兴趣的可以自行了解。</p>
+</blockquote>
+<h2 id="接口与类的使用场景"><a href="#接口与类的使用场景" class="headerlink" title="接口与类的使用场景"></a>接口与类的使用场景</h2><p>这里将给一个稍微复杂一点的例子：旅行社运送旅客。  </p>
+<h3 id="定义接口"><a href="#定义接口" class="headerlink" title="定义接口"></a>定义接口</h3><p>这里我们定义了几类接口：旅客、载客、位置、运送，目的就是声明规范，实现了这些接口的类就可以被用来做这些事情。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 旅客</span></span><br><span class="line">interface Passgener &#123;</span><br><span class="line">	name: string;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 载客</span></span><br><span class="line">interface Carriable &#123;</span><br><span class="line">  passengers: Passgener[];</span><br><span class="line">  getUp (...passengers: Passgener[]): number;</span><br><span class="line">  getOff (): number;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 位置</span></span><br><span class="line">interface Positioned &#123;</span><br><span class="line">	x: number;</span><br><span class="line">	y: number;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 常量：初始位置</span></span><br><span class="line"><span class="keyword">const</span> positionOrigin: Positioned = &#123; <span class="attr">x</span>: <span class="number">0</span>, <span class="attr">y</span>: <span class="number">0</span> &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 运送</span></span><br><span class="line">interface Moveable &#123;</span><br><span class="line">	position: Positioned;</span><br><span class="line">	moveTo(Positioned: Positioned): Positioned;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="实现具体类"><a href="#实现具体类" class="headerlink" title="实现具体类"></a>实现具体类</h2><p>这里我实现了两个类：小汽车、巴士，这两个类均实现了载客、运送接口，也就是说明它们是拥有这些能力的。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 小汽车</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Car</span> <span class="title">implements</span> <span class="title">Carriable</span>, <span class="title">Moveable</span> </span>&#123;</span><br><span class="line">  passengers: Passgener[];</span><br><span class="line">  position: Positioned;</span><br><span class="line">  capacity: number;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(capacity: number) &#123;</span><br><span class="line">	<span class="keyword">this</span>.passengers = [];</span><br><span class="line">	<span class="keyword">this</span>.position = positionOrigin;</span><br><span class="line">	<span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  getUp (...passengers: Passgener[]): number &#123;</span><br><span class="line">    <span class="keyword">if</span> (passengers.length &gt; <span class="keyword">this</span>.capacity) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">`This car can carry <span class="subst">$&#123;<span class="keyword">this</span>.capacity&#125;</span> passengers!`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(</span><br><span class="line">			<span class="string">`This car carries <span class="subst">$&#123;passengers.map(item =&gt; item.name).join(<span class="string">','</span>)&#125;</span>`</span></span><br><span class="line">		);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.passengers.push(...passengers);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  getOff (): number &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.passengers.splice(<span class="number">0</span>).length;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">	moveTo(position: Positioned): Positioned &#123;</span><br><span class="line">		<span class="built_in">Object</span>.assign(<span class="keyword">this</span>.position, position);</span><br><span class="line">		<span class="built_in">console</span>.log(</span><br><span class="line">			<span class="string">`This car carries <span class="subst">$&#123;<span class="keyword">this</span>.passengers.map(item =&gt; item.name).join(<span class="string">','</span>)&#125;</span> to [<span class="subst">$&#123;</span></span></span><br><span class="line"><span class="string"><span class="subst">				<span class="keyword">this</span>.position.x</span></span></span><br><span class="line"><span class="string"><span class="subst">			&#125;</span>, <span class="subst">$&#123;<span class="keyword">this</span>.position.y&#125;</span>]`</span></span><br><span class="line">		);</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.position;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 巴士</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Bus</span> <span class="title">implements</span> <span class="title">Carriable</span>, <span class="title">Moveable</span> </span>&#123;</span><br><span class="line">  passengers: Passgener[];</span><br><span class="line">  position: Positioned;</span><br><span class="line">  capacity: number;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(capacity: number) &#123;</span><br><span class="line">	<span class="keyword">this</span>.passengers = [];</span><br><span class="line">	<span class="keyword">this</span>.position = positionOrigin;</span><br><span class="line">	<span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  getUp (...passengers: Passgener[]): number &#123;</span><br><span class="line">    <span class="keyword">if</span> (passengers.length &gt; <span class="keyword">this</span>.capacity) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">`This Bus can carry <span class="subst">$&#123;<span class="keyword">this</span>.capacity&#125;</span> passengers!`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(</span><br><span class="line">			<span class="string">`This Bus carries <span class="subst">$&#123;passengers.map(item =&gt; item.name).join(<span class="string">','</span>)&#125;</span>`</span></span><br><span class="line">		);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.passengers.push(...passengers);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  getOff (): number &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.passengers.splice(<span class="number">0</span>).length;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">	moveTo(position: Positioned): Positioned &#123;</span><br><span class="line">    <span class="built_in">Object</span>.assign(<span class="keyword">this</span>.position, position);</span><br><span class="line">    <span class="built_in">console</span>.log(</span><br><span class="line">			<span class="string">`This Bus carries <span class="subst">$&#123;<span class="keyword">this</span>.passengers.map(item =&gt; item.name).join(<span class="string">','</span>)&#125;</span> to [<span class="subst">$&#123;</span></span></span><br><span class="line"><span class="string"><span class="subst">				<span class="keyword">this</span>.position.x</span></span></span><br><span class="line"><span class="string"><span class="subst">			&#125;</span>, <span class="subst">$&#123;<span class="keyword">this</span>.position.y&#125;</span>]`</span></span><br><span class="line">		);</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.position;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="实现功能"><a href="#实现功能" class="headerlink" title="实现功能"></a>实现功能</h2><p>具体类定义出来了，我们就可以实现功能，我们定义一个旅行社，由旅行社来运送旅客。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 旅行社</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TravelAgency</span> </span>&#123;</span><br><span class="line">  name: string;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(name: string) &#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  carrying (carrier: Carriable &amp; Moveable, <span class="attr">position</span>: Positioned, ...passengers: Passgener[]): Positioned &#123;</span><br><span class="line">    carrier.getUp(...passengers);</span><br><span class="line">    <span class="keyword">return</span> carrier.moveTo(position);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实例化对象</span></span><br><span class="line"><span class="keyword">let</span> t1 = <span class="keyword">new</span> TravelAgency(<span class="string">"t1"</span>);</span><br><span class="line"><span class="keyword">let</span> c1 = <span class="keyword">new</span> Car(<span class="number">4</span>);</span><br><span class="line"><span class="keyword">let</span> b1 = <span class="keyword">new</span> Bus(<span class="number">30</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实现功能</span></span><br><span class="line">t1.carrying(c1, &#123;<span class="attr">x</span>: <span class="number">10</span>, <span class="attr">y</span>: <span class="number">60</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'Jack'</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'Tom'</span>&#125;);</span><br><span class="line">t1.carrying(b1, &#123;<span class="attr">x</span>: <span class="number">10</span>, <span class="attr">y</span>: <span class="number">60</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'Jack'</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'Tom'</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'Mary'</span>&#125;, &#123;<span class="attr">name</span>: <span class="string">'Joe'</span>&#125;);</span><br></pre></td></tr></table></figure></p>
+<h2 id="抽象类的使用场景"><a href="#抽象类的使用场景" class="headerlink" title="抽象类的使用场景"></a>抽象类的使用场景</h2><p>上面已经把完整的功能实现出来了，但是我们可以看到，Car和Bus的代码还是有冗余的。这里我们就可以通过抽象类来做一些优化。</p>
+<p>我们先实现一个交通工具的抽象类，然后继承实现轮船类。我们可以发现抽象类已经实现的方法，子类是无需重复实现的。只有抽象出来的必须子类实现的才需要实现。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 交通工具</span></span><br><span class="line">abstract <span class="class"><span class="keyword">class</span> <span class="title">Vehicle</span> <span class="title">implements</span> <span class="title">Carriable</span>, <span class="title">Moveable</span> </span>&#123;</span><br><span class="line">  name: string;</span><br><span class="line">  passengers: Passgener[];</span><br><span class="line">	position: Positioned;</span><br><span class="line">  capacity: number;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 抽象方法</span></span><br><span class="line">  abstract run(speed: number): <span class="keyword">void</span>;</span><br><span class="line">  </span><br><span class="line">  getUp (...passengers: Passgener[]): number &#123;</span><br><span class="line">    <span class="keyword">if</span> (passengers.length &gt; <span class="keyword">this</span>.capacity) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">`This <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span> can carry <span class="subst">$&#123;<span class="keyword">this</span>.capacity&#125;</span> passengers!`</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">console</span>.log(</span><br><span class="line">			<span class="string">`This <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span> carries <span class="subst">$&#123;passengers.map(item =&gt; item.name).join(<span class="string">','</span>)&#125;</span>`</span></span><br><span class="line">		);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.passengers.push(...passengers);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  getOff (): number &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.passengers.splice(<span class="number">0</span>).length;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">	moveTo(position: Positioned): Positioned &#123;</span><br><span class="line">		<span class="built_in">Object</span>.assign(<span class="keyword">this</span>.position, position);</span><br><span class="line">		<span class="built_in">console</span>.log(</span><br><span class="line">			<span class="string">`This <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span> carries <span class="subst">$&#123;<span class="keyword">this</span>.passengers.map(item =&gt; item.name).join(<span class="string">','</span>)&#125;</span> to [<span class="subst">$&#123;</span></span></span><br><span class="line"><span class="string"><span class="subst">				<span class="keyword">this</span>.position.x</span></span></span><br><span class="line"><span class="string"><span class="subst">			&#125;</span>, <span class="subst">$&#123;<span class="keyword">this</span>.position.y&#125;</span>]`</span></span><br><span class="line">		);</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">this</span>.position;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 轮船</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ship</span> <span class="keyword">extends</span> <span class="title">Vehicle</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(capacity: number) &#123;</span><br><span class="line">    <span class="keyword">super</span>();</span><br><span class="line">		<span class="keyword">this</span>.passengers = [];</span><br><span class="line">		<span class="keyword">this</span>.position = positionOrigin;</span><br><span class="line">		<span class="keyword">this</span>.capacity = capacity;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 抽象方法必须实现 </span></span><br><span class="line">  run(speed: number) &#123;</span><br><span class="line">    <span class="comment">// todo, run as a ship...</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`This <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span> running at <span class="subst">$&#123;speed&#125;</span>km/h.`</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到此介绍完了接口和类的基本使用场景，再次体会一下关键字：<strong>抽象、继承</strong>。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概述和对比"><span class="toc-text">概述和对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#接口与类的使用场景"><span class="toc-text">接口与类的使用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#定义接口"><span class="toc-text">定义接口</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现具体类"><span class="toc-text">实现具体类</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现功能"><span class="toc-text">实现功能</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#抽象类的使用场景"><span class="toc-text">抽象类的使用场景</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/07/23/TypeScript学习6-函数/" class="prev">&larr; 上一篇 TypeScript学习6-函数</a>
+  
+
+  
+
+  
+    <a href="/2019/06/29/TypeScript学习4-类/" class="next">下一篇 TypeScript学习4-类 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,393 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="场景：禁止蒙层底部页面跟随滚动目前比较常用的有三种方案：
+
+overflow hidden，这个方案是pc端的不二选择，简单有效。移动端，效果不好或直接无效。
+滑动事件，阻止默认行为，移动端的一般选择。不过碰到弹层也有滚动条时，这种方案就行不通了
+移动端，碰到第二种方案里面的特例时，我们就要考虑其他方案了：body fix，代码如下：12345678910111213componentDid...">
+  
+  <title>使用body fix实现禁止蒙层底部页面跟随滚动时，rem布局的横竖屏切换在safari下的问题 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/01/18/经验教训-拿来主义/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        经验教训-拿来主义
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2018/10/24/我用的分布式锁/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        总结我用的Redis分布式锁
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>使用body fix实现禁止蒙层底部页面跟随滚动时，rem布局的横竖屏切换在safari下的问题</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2018-10-26</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/CSS/">CSS</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/CSS/">CSS</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/body/">body</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/fixed/">fixed</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/蒙层/">蒙层</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/rem/">rem</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/横竖屏/">横竖屏</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="场景：禁止蒙层底部页面跟随滚动"><a href="#场景：禁止蒙层底部页面跟随滚动" class="headerlink" title="场景：禁止蒙层底部页面跟随滚动"></a>场景：禁止蒙层底部页面跟随滚动</h2><p>目前比较常用的有三种方案：</p>
+<ul>
+<li>overflow hidden，这个方案是pc端的不二选择，简单有效。移动端，效果不好或直接无效。</li>
+<li>滑动事件，阻止默认行为，移动端的一般选择。<br><strong>不过碰到弹层也有滚动条时，这种方案就行不通了</strong></li>
+<li>移动端，碰到第二种方案里面的特例时，我们就要考虑其他方案了：body fix，代码如下：<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">componentDidMount() &#123;</span><br><span class="line">  <span class="keyword">const</span> rootEl = <span class="built_in">document</span>.documentElement;</span><br><span class="line">  <span class="keyword">const</span> bodyEl = <span class="built_in">document</span>.body;</span><br><span class="line">  <span class="keyword">this</span>.position = <span class="built_in">window</span>.getComputedStyle(bodyEl).position;</span><br><span class="line">  <span class="keyword">this</span>.scrollTop = rootEl.scrollTop || bodyEl.scrollTop;</span><br><span class="line">  bodyEl.style.position = <span class="string">'fixed'</span>;</span><br><span class="line">  bodyEl.style.top = -<span class="keyword">this</span>.scrollTop + <span class="string">'px'</span>;</span><br><span class="line">&#125;</span><br><span class="line">componentWillUnmount() &#123;</span><br><span class="line">  <span class="built_in">document</span>.body.style.position = <span class="keyword">this</span>.position;</span><br><span class="line">  <span class="built_in">document</span>.body.style.top = <span class="string">''</span>;</span><br><span class="line">  <span class="built_in">window</span>.scrollTo(<span class="number">0</span>, <span class="keyword">this</span>.scrollTop);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="场景：Rem响应式布局"><a href="#场景：Rem响应式布局" class="headerlink" title="场景：Rem响应式布局"></a>场景：Rem响应式布局</h2><p>在移动端，需要使用响应式布局，rem布局是个很不错的方案。样例如下：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">html</span> &#123; <span class="attribute">font-size</span>: <span class="number">62.5%</span>; &#125; <span class="comment">/* font-size: 62.5% now means that 1.0 rem = 10px */</span></span><br><span class="line"><span class="selector-class">.container</span> &#123; <span class="attribute">background</span>: <span class="number">#fff</span>; <span class="attribute">font-family</span>: arial; <span class="attribute">font-size</span>: <span class="number">1.4rem</span>; <span class="attribute">line-height</span>: <span class="number">1.6rem</span>; &#125;</span><br></pre></td></tr></table></figure></p>
+<p>响应式实现：在页面<strong>初始化</strong>和<strong>resize</strong>时，按屏幕尺寸计算并设置html元素的font size。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">setRem</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line">setRem();</span><br><span class="line"><span class="built_in">window</span>.onresize = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  setRem();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="safari下的问题"><a href="#safari下的问题" class="headerlink" title="safari下的问题"></a>safari下的问题</h2><p> 在上述两个方案一起使用时，safari下出现一个奇怪的问题：<br> <strong>打开蒙层，再做横竖屏切换时，rem动态设置无效</strong></p>
+<blockquote>
+<p>暂时还没找到原因和解决方案（如有同学找到原因或方案，欢迎指教）。</p>
+</blockquote>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#场景：禁止蒙层底部页面跟随滚动"><span class="toc-text">场景：禁止蒙层底部页面跟随滚动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#场景：Rem响应式布局"><span class="toc-text">场景：Rem响应式布局</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#safari下的问题"><span class="toc-text">safari下的问题</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/01/18/经验教训-拿来主义/" class="prev">&larr; 上一篇 经验教训-拿来主义</a>
+  
+
+  
+
+  
+    <a href="/2018/10/24/我用的分布式锁/" class="next">下一篇 总结我用的Redis分布式锁 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

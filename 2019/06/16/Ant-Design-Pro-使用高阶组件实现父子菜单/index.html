@@ -1,0 +1,395 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="需求背景后台管理系统，经常会有：列表+详情+编辑的页面结构，菜单只需展示列表页，详情和编辑，从列表数据进去。
+我们想要的效果是：
+
+两级页面
+列表页的面包屑是3级，详情页等是4级，而且可以点击回到3级
+3级路径时展示列表，4级路径时展示详情等
+
+技术设计与实现参考Ant Design Pro示例首先参考一下Ant Design Pro官方示例：官方示例有一个分步表单的页面，是用的嵌套菜单，不...">
+  
+  <title>Ant Design Pro-使用高阶组件实现父子菜单 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/06/24/移动端单击事件延迟的处理方法/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        移动端单击事件延迟的处理方法
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/06/04/TypeScript学习3-接口/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript学习3-接口
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Ant Design Pro-使用高阶组件实现父子菜单</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-06-16</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/React/">React</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Ant-Design/">Ant Design</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="需求背景"><a href="#需求背景" class="headerlink" title="需求背景"></a>需求背景</h2><p>后台管理系统，经常会有：列表+详情+编辑的页面结构，菜单只需展示列表页，详情和编辑，从列表数据进去。</p>
+<p>我们想要的效果是：</p>
+<ul>
+<li>两级页面</li>
+<li>列表页的面包屑是3级，详情页等是4级，而且可以点击回到3级</li>
+<li>3级路径时展示列表，4级路径时展示详情等</li>
+</ul>
+<h2 id="技术设计与实现"><a href="#技术设计与实现" class="headerlink" title="技术设计与实现"></a>技术设计与实现</h2><h3 id="参考Ant-Design-Pro示例"><a href="#参考Ant-Design-Pro示例" class="headerlink" title="参考Ant Design Pro示例"></a>参考Ant Design Pro示例</h3><p>首先参考一下Ant Design Pro官方示例：官方示例有一个分步表单的页面，是用的嵌套菜单，不过实现的效果还是单页面结构：</p>
+<ul>
+<li>只有一级页面</li>
+<li>面包屑渲染成4级</li>
+<li>分步表单部分会根据不同的子路径来渲染</li>
+</ul>
+<p>示例满足不了我们的需求。</p>
+<h3 id="自己实现"><a href="#自己实现" class="headerlink" title="自己实现"></a>自己实现</h3><p>思路如下：</p>
+<ul>
+<li><p>菜单部分，父子菜单的结构，注意：hideChildrenInMenu，在菜单中隐藏子菜单</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    path: <span class="string">'/articles/list'</span>,</span><br><span class="line">    name: <span class="string">'artticle-list'</span>,</span><br><span class="line">    component: <span class="string">'./article/List'</span>,</span><br><span class="line">    hideChildrenInMenu: <span class="literal">true</span>,</span><br><span class="line">    routes: [</span><br><span class="line">      &#123;</span><br><span class="line">        path: <span class="string">'/articles/list/detail'</span>,</span><br><span class="line">        name: <span class="string">'artticle-detail'</span>,</span><br><span class="line">        component: <span class="string">'./article/List/Detail'</span>,</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>页面部分，用嵌套路由，父路径用exact模式严格匹配，指向父页面组件；子路径使用带参数模式匹配，指向子页面组件。</p>
+<blockquote>
+<p>这里为了方便使用，设计成高阶组件，使用的时候，用装饰器修饰父页面组件即可</p>
+</blockquote>
+<p>  父子路由高阶组件定义</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 支持子组件路由的高阶组件</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;Component&#125;</span> <span class="variable">WrappedComponent</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">withChildren</span>(<span class="params">WrappedComponent</span>) </span>&#123;</span><br><span class="line">  <span class="class"><span class="keyword">class</span> <span class="title">ComponentWithChildren</span> <span class="keyword">extends</span> <span class="title">PureComponent</span> </span>&#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">      <span class="keyword">const</span> &#123; children, match &#125; = <span class="keyword">this</span>.props;</span><br><span class="line">      <span class="keyword">return</span> (</span><br><span class="line">        &lt;React.Fragment&gt;</span><br><span class="line">          &lt;Route</span><br><span class="line">            path=&#123;<span class="string">`<span class="subst">$&#123;match.url&#125;</span>/:action`</span>&#125;</span><br><span class="line">            render=&#123;() =&gt; &lt;React.Fragment&gt;&#123;children&#125;&lt;/React.Fragment&gt;&#125;</span><br><span class="line">          /&gt;</span><br><span class="line">          &lt;Route exact path=&#123;match.url&#125; render=&#123;() =&gt; &lt;WrappedComponent &#123;...this.props&#125; /&gt;&#125; /&gt;</span><br><span class="line">        &lt;<span class="regexp">/React.Fragment&gt;</span></span><br><span class="line"><span class="regexp">      );</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">  return ComponentWithChildren;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>   父子路由高阶组件使用</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@withChildren</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TableList</span> <span class="keyword">extends</span> <span class="title">PureComponent</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>到此完美实现我们的需求。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#需求背景"><span class="toc-text">需求背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#技术设计与实现"><span class="toc-text">技术设计与实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#参考Ant-Design-Pro示例"><span class="toc-text">参考Ant Design Pro示例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自己实现"><span class="toc-text">自己实现</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/06/24/移动端单击事件延迟的处理方法/" class="prev">&larr; 上一篇 移动端单击事件延迟的处理方法</a>
+  
+
+  
+
+  
+    <a href="/2019/06/04/TypeScript学习3-接口/" class="next">下一篇 TypeScript学习3-接口 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,385 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="自动化测试自动化测试金字塔，也称为自动化分层测试，这里仅仅列举了每个层次的百分比，实际要根据团队的方向来做调整：
+
+Unit：70%，大部分自动化实现，用于验证一个单独函数或独立功能模块的代码；
+Service：20%，涉及两个或两个以上，甚至更多模块之间交互的集成测试；
+UI：10%，覆盖三个或以上的功能模块，真实用户场景和数据的验收测试；Unit是整个金字塔的基石。最重要特点是运行速度非...">
+  
+  <title>单元测试探索 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2018/01/05/使用transform动画实现表头固定/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        使用transform动画实现表头固定
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2017/07/08/AI趋势分析/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        AI趋势分析
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>单元测试探索</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2017-12-04</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/Java自动化测试/">Java自动化测试</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/自动化测试/">自动化测试</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/JUnit/">JUnit</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/JMockit/">JMockit</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="自动化测试"><a href="#自动化测试" class="headerlink" title="自动化测试"></a>自动化测试</h2><p>自动化测试金字塔，也称为自动化分层测试，这里仅仅列举了每个层次的百分比，实际要根据团队的方向来做调整：</p>
+<ul>
+<li>Unit：70%，大部分自动化实现，用于验证一个单独函数或独立功能模块的代码；</li>
+<li>Service：20%，涉及两个或两个以上，甚至更多模块之间交互的集成测试；</li>
+<li>UI：10%，覆盖三个或以上的功能模块，真实用户场景和数据的验收测试；<br><strong>Unit是整个金字塔的基石。</strong><br>最重要特点是运行速度非常快；<br>第二个重要特点是UT应覆盖代码库的大部分，能够确定一旦UT通过后，应用程序就能正常工作。</li>
+</ul>
+<h2 id="自动化单元测试原则"><a href="#自动化单元测试原则" class="headerlink" title="自动化单元测试原则"></a>自动化单元测试原则</h2><p>  提交代码、运行测试的重点是什么？快速捕获那些因修改向系统中引入的最常见错误，并通知开发人员，以便他们能快速修复他们。<br>  提交阶段提供反馈的价值在于，对它的投入可以让系统高效且更快地工作。</p>
+<ul>
+<li>Level1：正常流程可用，即一个函数在输入正确的参数时，会有正确的输出</li>
+<li>Level2：异常流程可抛出逻辑异常，即输入参数有误时，不能抛出系统异常，而是用自己定义的逻辑异常通知上层调用代码其错误之处</li>
+<li>Level3：极端情况和边界数据可用，对输入参数的边界情况也要单独测试，确保输出是正确有效的</li>
+<li>Level4：所有分支、循环的逻辑走通，不能有任何流程是测试不到的</li>
+<li>Level5：输出数据的所有字段验证，对有复杂数据结构的输出，确保每个字段都是正确的</li>
+</ul>
+<p>一般只做到Level2，重要系统或者底层服务，要做到Level3或Level4。而很少做到Level5。即便如此，就已经实现了如上所说的，很难被测试工程师发现bug。</p>
+<h2 id="单元测试的好处"><a href="#单元测试的好处" class="headerlink" title="单元测试的好处"></a>单元测试的好处</h2><p>  可以提前释放压力、风险、暴露问题等多个方面，改变以往没有单元测试，所有问题都集中到最后爆发的弊端。</p>
+<h2 id="单元测试技术栈"><a href="#单元测试技术栈" class="headerlink" title="单元测试技术栈"></a>单元测试技术栈</h2><ul>
+<li>springtest + junit4 + JMockit</li>
+<li>spring启动要初始化很多bean，加载较慢，优化方向：springBoot</li>
+<li>使用Spring测试套件，Spring容器只会初始化一次！</li>
+<li>使用JMockit，让目标方法按你定义的规则生成模拟数据</li>
+<li>使用H2数据库，让单元测试环境独立，不影响其他环境</li>
+</ul>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#自动化测试"><span class="toc-text">自动化测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#自动化单元测试原则"><span class="toc-text">自动化单元测试原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#单元测试的好处"><span class="toc-text">单元测试的好处</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#单元测试技术栈"><span class="toc-text">单元测试技术栈</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2018/01/05/使用transform动画实现表头固定/" class="prev">&larr; 上一篇 使用transform动画实现表头固定</a>
+  
+
+  
+
+  
+    <a href="/2017/07/08/AI趋势分析/" class="next">下一篇 AI趋势分析 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

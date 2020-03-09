@@ -1,0 +1,391 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="接口什么是接口TypeScript的核心就是类型检查，接口就是用于声明类型，给内部或第三方使用者提供类型声明和约束。
+使用场景
+数据类型声明和约束
+12345678910111213// 声明数据类型interface CustomerInfo &#123;  customerCode: string;  customerName: string;&#125;// 使用数据类型functio...">
+  
+  <title>TypeScript学习3-接口 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/06/16/Ant-Design-Pro-使用高阶组件实现父子菜单/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Ant Design Pro-使用高阶组件实现父子菜单
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/05/30/左耳听风ARTS打卡记录/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        左耳听风ARTS打卡记录
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>TypeScript学习3-接口</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-06-04</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/TypeScript/">TypeScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/接口/">接口</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><h3 id="什么是接口"><a href="#什么是接口" class="headerlink" title="什么是接口"></a>什么是接口</h3><p>TypeScript的核心就是类型检查，接口就是用于声明类型，给内部或第三方使用者提供类型声明和约束。</p>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><ul>
+<li><p>数据类型声明和约束</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明数据类型</span></span><br><span class="line"><span class="keyword">interface</span> CustomerInfo &#123;</span><br><span class="line">  customerCode: <span class="built_in">string</span>;</span><br><span class="line">  customerName: <span class="built_in">string</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用数据类型</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">helloCustomer</span>(<span class="params">customerInfo: CustomerInfo</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">`Hello, <span class="subst">$&#123;customerInfo.customerName&#125;</span>!`</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">helloCustomer(&#123;customerCode: <span class="string">'1001'</span>, customerName: <span class="string">'Jee'</span>&#125;); <span class="comment">// ok</span></span><br><span class="line">helloCustomer(&#123;customerName: <span class="string">'Jee'</span>&#125;); <span class="comment">// error, Property 'customerCode' is missing</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>面向对象编程</p>
+</li>
+</ul>
+<p>这里和面向对象语言类似，用于定义对象接口，声明对象的结构，定义类时可以实现接口，满足这个接口定义的功能。<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 接口声明</span></span><br><span class="line"><span class="keyword">interface</span> Animal &#123;</span><br><span class="line">  name: <span class="built_in">string</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 接口继承</span></span><br><span class="line"><span class="keyword">interface</span> Mammal <span class="keyword">extends</span> Animal &#123;</span><br><span class="line">  legNum: <span class="built_in">number</span>;</span><br><span class="line">  sound(): <span class="built_in">string</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 类实现</span></span><br><span class="line"><span class="keyword">class</span> Bull <span class="keyword">implements</span> Mammal &#123;</span><br><span class="line">  name: <span class="built_in">string</span>;</span><br><span class="line">  legNum: <span class="built_in">number</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params">name: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">    <span class="keyword">this</span>.legNum = <span class="number">4</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  sound() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'moo'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实例</span></span><br><span class="line"><span class="keyword">let</span> bull1 = <span class="keyword">new</span> Bull(<span class="string">'bull1'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(bull1.sound()); <span class="comment">// moo</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="可变接口属性"><a href="#可变接口属性" class="headerlink" title="可变接口属性"></a>可变接口属性</h3><p>有两种方式可以实现可变属性，属性明确时，推荐第一种。不明确时可以用第二种。</p>
+<ul>
+<li><p>可选属性，定义可以选传的属性</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> CustomerInfo &#123;</span><br><span class="line">  customerCode: <span class="built_in">string</span>;</span><br><span class="line">  customerName: <span class="built_in">string</span>;</span><br><span class="line">  customerAddr?: <span class="built_in">string</span>; <span class="comment">// 可选属性</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>索引类型，支持string，number索引属性</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> CustomerInfo &#123;</span><br><span class="line">  customerCode: <span class="built_in">string</span>;</span><br><span class="line">  customerName: <span class="built_in">string</span>;</span><br><span class="line">  customerAddr?: <span class="built_in">string</span>; <span class="comment">// 可选属性</span></span><br><span class="line">  [key: <span class="built_in">string</span>]: <span class="built_in">any</span>; <span class="comment">// 其他任意名称，任意类型的属性</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>这里说明一下，因为JavaScript对象中，数字索引是会转换成string来取值的。如果一个接口里面，同时有number、string索引属性时，number索引属性的类型，必须时string索引属性的子类型。<strong>也就是，number索引的属性类型，必须能被string索引的属性类型覆盖；用number索引去取值，取到的值也是string索引属性的类型。</strong></p>
+</blockquote>
+<h3 id="只读属性"><a href="#只读属性" class="headerlink" title="只读属性"></a>只读属性</h3><ul>
+<li>只读属性，初始化后不能修改，readonly修饰<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> CustomerInfo &#123;</span><br><span class="line">  greeting: <span class="built_in">string</span>; <span class="comment">// 普通属性</span></span><br><span class="line">  readonly standardGreeting: <span class="built_in">string</span>; <span class="comment">// 只读属性</span></span><br><span class="line">  customerCode: <span class="built_in">string</span>;</span><br><span class="line">  customerName: <span class="built_in">string</span>; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<blockquote>
+<p>const vs readonly，变量用const，属性用readonly</p>
+</blockquote>
+<h3 id="函数类型"><a href="#函数类型" class="headerlink" title="函数类型"></a>函数类型</h3><p>接口除了能描述对象类型，还能描述函数类型（这个和面向对象语言有点不一样，需要理解一下）。<br><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">interface</span> SearchFunc &#123;</span><br><span class="line">  (content: <span class="built_in">string</span>, key: <span class="built_in">string</span>): <span class="built_in">boolean</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里参数名可以不一样，类型也可以省略</span></span><br><span class="line"><span class="keyword">let</span> mySearchFunc: SearchFunc = <span class="function">(<span class="params">c, k</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> c.search(k) &gt; <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h3><p>会再写一遍类的学习，一篇接口与类的结合使用。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#接口"><span class="toc-text">接口</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是接口"><span class="toc-text">什么是接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用场景"><span class="toc-text">使用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#可变接口属性"><span class="toc-text">可变接口属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#只读属性"><span class="toc-text">只读属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数类型"><span class="toc-text">函数类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#后续"><span class="toc-text">后续</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/06/16/Ant-Design-Pro-使用高阶组件实现父子菜单/" class="prev">&larr; 上一篇 Ant Design Pro-使用高阶组件实现父子菜单</a>
+  
+
+  
+
+  
+    <a href="/2019/05/30/左耳听风ARTS打卡记录/" class="next">下一篇 左耳听风ARTS打卡记录 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

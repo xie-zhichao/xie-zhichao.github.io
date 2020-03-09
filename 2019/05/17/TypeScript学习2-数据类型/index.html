@@ -1,0 +1,386 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="变量类型TypeScript支持的变量类型与JavaScript基本一样。另外提供了枚举类型。
+这里还是给出一些例子去理解TypeScript的变量类型使用，具体的语言知识可以查看文档。
+原始类型1234567// booleanlet success: boolean = true;// numberlet num1: number = 12;let num2: number = 0xab...">
+  
+  <title>TypeScript学习2-数据类型 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/05/23/Ant-Design限制输入小数位数/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Ant Design限制输入小数位数
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/05/15/Ant-Design管理后台，页面返回时，保持历史状态的解决方案/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Ant Design管理后台，页面返回时，保持历史状态的解决方案
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>TypeScript学习2-数据类型</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-05-17</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="变量类型"><a href="#变量类型" class="headerlink" title="变量类型"></a>变量类型</h2><p>TypeScript支持的变量类型与JavaScript基本一样。另外提供了<strong>枚举类型</strong>。</p>
+<p>这里还是给出一些例子去理解TypeScript的变量类型使用，具体的语言知识可以查看文档。</p>
+<h3 id="原始类型"><a href="#原始类型" class="headerlink" title="原始类型"></a>原始类型</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// boolean</span></span><br><span class="line"><span class="keyword">let</span> success: boolean = <span class="literal">true</span>;</span><br><span class="line"><span class="comment">// number</span></span><br><span class="line"><span class="keyword">let</span> num1: number = <span class="number">12</span>;</span><br><span class="line"><span class="keyword">let</span> num2: number = <span class="number">0xab</span>; <span class="comment">// 支持多种进制</span></span><br><span class="line"><span class="comment">// string</span></span><br><span class="line"><span class="keyword">let</span> str1: string = <span class="string">'abc'</span>;</span><br></pre></td></tr></table></figure>
+<p>除上述示例，还有null, undefined, symbol类型，可以参看文档。</p>
+<h3 id="数组和元组"><a href="#数组和元组" class="headerlink" title="数组和元组"></a>数组和元组</h3><p>数组有两种声明方式：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr1: string[] = [<span class="string">'hello'</span>, <span class="string">'world'</span>];</span><br><span class="line"><span class="keyword">let</span> arr2: <span class="built_in">Array</span>&lt;string&gt; = [<span class="string">'hello'</span>, <span class="string">'world'</span>];</span><br></pre></td></tr></table></figure></p>
+<p>元组是一种特殊的数组<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> arr1: [string, number] = [<span class="string">'hello'</span>, <span class="number">123</span>];</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>元组越界时，会以联合类型来处理，具体请查阅文档。</p>
+</blockquote>
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><p>枚举类型与C#，Java语言相比，另外提供了一个便利特性，可以拿到枚举的名称。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">enum Color &#123;Red = <span class="number">1</span>, Green, Blue&#125;</span><br><span class="line"><span class="keyword">let</span> colorName: string = Color[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(colorName);  <span class="comment">// 显示'Green'因为上面代码里它的值是2</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="any-void"><a href="#any-void" class="headerlink" title="any, void"></a>any, void</h3><ul>
+<li>any表示任意类型，可以在类型不确定时使用（<strong>能不用就不要用</strong>），如：<ul>
+<li>第三方的返回值，你无法确定类型</li>
+<li>你不确定你将会用到哪些类型</li>
+</ul>
+</li>
+<li>void正好相反，表示没有类型，一般用于没有返回值的函数</li>
+</ul>
+<h3 id="null-undefined"><a href="#null-undefined" class="headerlink" title="null, undefined"></a>null, undefined</h3><ul>
+<li>类型定义和JavaScript一致</li>
+<li>TypeScript里面，可以赋给：本身类型、any、void</li>
+</ul>
+<h3 id="object"><a href="#object" class="headerlink" title="object"></a>object</h3><p>object类型是基本的6个类型之外的其他类型的基类。</p>
+<p>使用时需注意，用object声明时，后面只能当object使用，如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a: object = <span class="keyword">new</span> <span class="built_in">Date</span>();</span><br><span class="line">a.hasOwnProperty(<span class="string">'name'</span>); <span class="comment">// ok</span></span><br><span class="line">a.getDate(); <span class="comment">// error</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="never"><a href="#never" class="headerlink" title="never"></a>never</h3><p>never是个比较特殊的类型，表示永远不会到达。</p>
+<p>典型的场景就是异常抛出函数的返回值。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bizError</span>(<span class="params">code: number, msg: string</span>): <span class="title">never</span> </span>&#123;</span><br><span class="line">   <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(&#123;</span><br><span class="line">       code,</span><br><span class="line">       msg</span><br><span class="line">   &#125;); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="类型断言"><a href="#类型断言" class="headerlink" title="类型断言"></a>类型断言</h2><p>类型断言，我觉得也可以理解为强制类型转换。</p>
+<p>这个特性和强类型语言类型，看几个例子理解一下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 尖括号式</span></span><br><span class="line"><span class="keyword">let</span> var1: any = <span class="string">'abc'</span>;</span><br><span class="line"><span class="built_in">console</span>.log((&lt;string&gt;var1).substring(1));</span><br><span class="line"></span><br><span class="line">// as</span><br><span class="line">let var2: object = new Array&lt;number&gt;();</span><br><span class="line">console.log((var2 as Array&lt;number&gt;).push(1));</span><br></pre></td></tr></table></figure></p>
+<h2 id="类型推断"><a href="#类型推断" class="headerlink" title="类型推断"></a>类型推断</h2><p>有些情况下，不需要指明变量类型，TypeScript可以根据上下文自动推断类型。如下示例：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> a = <span class="string">'abc'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(a.substring(<span class="number">1</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj1 = &#123;</span><br><span class="line">    str1: <span class="string">'abc'</span>,</span><br><span class="line">    num1: <span class="number">123</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> &#123; str1, num1 &#125; = obj1;</span><br></pre></td></tr></table></figure></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li>TypeScript语言手册 <a href="https://www.tslang.cn/docs/handbook/basic-types.html" target="_blank" rel="noopener">https://www.tslang.cn/docs/handbook/basic-types.html</a></li>
+</ol>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#变量类型"><span class="toc-text">变量类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#原始类型"><span class="toc-text">原始类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数组和元组"><span class="toc-text">数组和元组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#枚举"><span class="toc-text">枚举</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#any-void"><span class="toc-text">any, void</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#null-undefined"><span class="toc-text">null, undefined</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#object"><span class="toc-text">object</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#never"><span class="toc-text">never</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类型断言"><span class="toc-text">类型断言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类型推断"><span class="toc-text">类型推断</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考"><span class="toc-text">参考</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/05/23/Ant-Design限制输入小数位数/" class="prev">&larr; 上一篇 Ant Design限制输入小数位数</a>
+  
+
+  
+
+  
+    <a href="/2019/05/15/Ant-Design管理后台，页面返回时，保持历史状态的解决方案/" class="next">下一篇 Ant Design管理后台，页面返回时，保持历史状态的解决方案 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+

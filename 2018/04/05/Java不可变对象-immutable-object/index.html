@@ -1,0 +1,394 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="题记在前面一篇《Java多线程下写同一个变量》 最后有一个问题，用变量n(String类型)做锁对象，为什么不行呢？这里涉及到一个概念：不可变对象。
+不可变对象引用Java Doc：
+
+An object is considered immutable if its state cannot change after it is constructed.一个对象，在创建之后，状态不能修改，认...">
+  
+  <title>Java不可变对象(immutable object) [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+  
+</head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2018/05/29/PostCSS-构建css更简单/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        PostCSS: 构建css更简单
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2018/04/05/也说饿了么和摩拜的收购/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        也说饿了么和摩拜的收购
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/me.png">
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Java不可变对象(immutable object)</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2018-04-05</span>
+      
+        <span id="post-title-updated">修改于 2020-03-09</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/Java/">Java</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/Java/">Java</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/多线程/">多线程</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/不可变对象/">不可变对象</a>
+      
+      </span>
+      
+    </p>
+    
+    <h1 id="题记"><a href="#题记" class="headerlink" title="题记"></a>题记</h1><p>在前面一篇<a href="/2018/01/25/Java多线程下写同一个变量/">《Java多线程下写同一个变量》</a> 最后有一个问题，用变量n(String类型)做锁对象，为什么不行呢？这里涉及到一个概念：不可变对象。</p>
+<h1 id="不可变对象"><a href="#不可变对象" class="headerlink" title="不可变对象"></a>不可变对象</h1><p>引用Java Doc：</p>
+<blockquote>
+<p>An object is considered immutable if its state cannot change after it is constructed.<br>一个对象，在创建之后，状态不能修改，认为它是不可变对象。</p>
+</blockquote>
+<p>常见的不可变对象是：String，Integer的对象。<br>看一段代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyTest</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        String str = <span class="string">"head"</span>;</span><br><span class="line">        System.out.println(strTest(str));</span><br><span class="line">        System.out.println(str);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">strTest</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        str += <span class="string">"-tail"</span>;</span><br><span class="line">        <span class="keyword">return</span> str;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<blockquote>
+<p>输出结果：<br>head-tail<br>head</p>
+</blockquote>
+<p>这个表现得和传值一样。</p>
+<h2 id="五大原则"><a href="#五大原则" class="headerlink" title="五大原则"></a>五大原则</h2><p>不可变更对象需遵循如下原则：</p>
+<ul>
+<li>immutable对象的状态在创建之后就不能发生改变，任何对它的改变都应该产生一个新的对象。</li>
+<li>Immutable类的所有的属性都应该是final的。</li>
+<li><p>对象必须被正确的创建，比如：对象引用在对象创建过程中不能泄露(leak)。<br>见如下举例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ImmutableDemo</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span>[] myArray;  </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ImmutableDemo</span><span class="params">(<span class="keyword">int</span>[] array)</span> </span>&#123;  </span><br><span class="line">        <span class="keyword">this</span>.myArray = array; <span class="comment">// wrong, you can change myArray by array </span></span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对象应该是final的，以此来限制子类继承父类，以避免子类改变了父类的immutable特性。</p>
+</li>
+<li>如果类中包含mutable类对象，那么返回给客户端的时候，返回该对象的一个拷贝，而不是该对象本身（该条可以归为第一条中的一个特例）</li>
+</ul>
+<h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><ul>
+<li>优点，天生线程安全，因为无论在哪里修改它，都会产生新的对象<blockquote>
+<p>这里说明一下，并不是说String就可以随便用于多线程共享，线程安全的只是当时那个String对象，你的String变量是个引用值，<strong>当你改动时，这个引用值还是在变的，每改一次，都会指向一个新对象</strong>。</p>
+</blockquote>
+</li>
+<li>优点，用于HashMap的key，hashcode是稳定的。<blockquote>
+<p>这里还有一个概念：<strong>字符串常量池</strong>，字符串在jvm运行环境内部有一个池子，String对象都是指向这个池子，相同的字符串指向相同的地址。</p>
+</blockquote>
+</li>
+<li>缺点，以String作例子，如果你频繁改动，会产生过多新对象，影响性能。可以考虑用StringBuilder(线程不安全)和StringBuffer(线程安全)</li>
+</ul>
+<h1 id="上一篇文章的答案"><a href="#上一篇文章的答案" class="headerlink" title="上一篇文章的答案"></a>上一篇文章的答案</h1><p>看完上面的解释，应该很好理解了，n每改一次，都会指向新的对象，对象锁就无效了。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#题记"><span class="toc-text">题记</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#不可变对象"><span class="toc-text">不可变对象</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#五大原则"><span class="toc-text">五大原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#优缺点"><span class="toc-text">优缺点</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#上一篇文章的答案"><span class="toc-text">上一篇文章的答案</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2018/05/29/PostCSS-构建css更简单/" class="prev">&larr; 上一篇 PostCSS: 构建css更简单</a>
+  
+
+  
+
+  
+    <a href="/2018/04/05/也说饿了么和摩拜的收购/" class="next">下一篇 也说饿了么和摩拜的收购 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5//jquery.fancybox.pack.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.5/helpers/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+
