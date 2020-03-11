@@ -7,7 +7,7 @@
 
 <!doctype html>
 <html lang="zh-CN">
-<head><meta name="generator" content="Hexo 3.9.0">
+<head>
   <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -27,20 +27,22 @@ Node.js 其实不是一门语言，它是 Javascript 的服务器运行时环境
     <link rel="shortcut icon" href="/favicon.png">
   
   
-  <link rel="stylesheet" href="/css/random.css">
+  
+<link rel="stylesheet" href="/css/random.css">
 <link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
 <link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
 <link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.7/css/jquery.fancybox.min.css">
 <link rel="stylesheet" href="/css/iconfont/iconfont.css">
 <link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+
   
-</head>
+<meta name="generator" content="Hexo 4.2.0"></head>
 
 <body>
 <div class="side-navigate hide-area">
   
     <div class="item prev">
-      <a href="/2020/01/14/从零开始实践React-高阶组件-HOC/">
+      <a href="/2020/01/14/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AE%9E%E8%B7%B5React-%E9%AB%98%E9%98%B6%E7%BB%84%E4%BB%B6-HOC/">
         <div class="item-icon"></div>
       </a>
       <div class="item-title">
@@ -50,7 +52,7 @@ Node.js 其实不是一门语言，它是 Javascript 的服务器运行时环境
   
   
     <div class="item next">
-      <a href="/2020/01/04/函数式编程探索-二-函数式编程与面向对象编程/">
+      <a href="/2020/01/04/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E6%8E%A2%E7%B4%A2-%E4%BA%8C-%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E4%B8%8E%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B/">
         <div class="item-icon"></div>
       </a>
       <div class="item-title">
@@ -65,8 +67,8 @@ Node.js 其实不是一门语言，它是 Javascript 的服务器运行时环境
     <div id="menu-inner">
       <div id="brand">
         
-        <a onclick="openUserCard()">
-          <img id="avatar" src="/me.png">
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/me.png"/>
           <div id="homelink">谢志超's Pages</div>
         </a>
       </div>
@@ -131,12 +133,12 @@ Node.js 其实不是一门语言，它是 Javascript 的服务器运行时环境
   <article id="post">
     <h1>Node.js + TypeScript 开发服务端是什么样的体验</h1>
     <p class="page-title-sub">
-      <span id="post-title-date">撰写于 2020-01-05</span>
+      <span id = "post-title-date">撰写于 2020-01-05</span>
       
-        <span id="post-title-updated">修改于 2020-03-09</span>
+        <span id = "post-title-updated">修改于 2020-03-09</span>
       
       
-      <span id="post-title-categories">分类
+      <span id = "post-title-categories">分类
       
       
         
@@ -146,7 +148,7 @@ Node.js 其实不是一门语言，它是 Javascript 的服务器运行时环境
       </span>
       
       
-      <span id="post-title-tags">
+      <span id = "post-title-tags">
       标签
       
       
@@ -211,13 +213,13 @@ Node.js 其实不是一门语言，它是 Javascript 的服务器运行时环境
   
 <nav id="pagination">
   
-    <a href="/2020/01/14/从零开始实践React-高阶组件-HOC/" class="prev">&larr; 上一篇 从零开始实践React 高阶组件(HOC)</a>
+    <a href="/2020/01/14/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E5%AE%9E%E8%B7%B5React-%E9%AB%98%E9%98%B6%E7%BB%84%E4%BB%B6-HOC/" class="prev">&larr; 上一篇 从零开始实践React 高阶组件(HOC)</a>
   
 
   
 
   
-    <a href="/2020/01/04/函数式编程探索-二-函数式编程与面向对象编程/" class="next">下一篇 函数式编程探索(二) - 函数式编程与面向对象编程 &rarr;</a>
+    <a href="/2020/01/04/%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E6%8E%A2%E7%B4%A2-%E4%BA%8C-%E5%87%BD%E6%95%B0%E5%BC%8F%E7%BC%96%E7%A8%8B%E4%B8%8E%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B/" class="next">下一篇 函数式编程探索(二) - 函数式编程与面向对象编程 &rarr;</a>
   
 </nav>
 
@@ -234,7 +236,7 @@ Node.js 其实不是一门语言，它是 Javascript 的服务器运行时环境
   <div id="bottom-outer">
     <div id="bottom-inner">
       Site by 谢志超 using
-      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <a href="http://hexo.io" target="_blank" rel="noopener">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random" target="_blank" rel="noopener">Random</a>
       <br>
       
     </div>
@@ -252,7 +254,7 @@ Node.js 其实不是一门语言，它是 Javascript 的服务器运行时环境
   
   
     <li>
-      <a href="https://github.com/xie-zhichao">
+      <a href="https://github.com/xie-zhichao" target="_blank" rel="noopener">
         
           <i class="icon iconfont github">&#xe606;</i>
         
