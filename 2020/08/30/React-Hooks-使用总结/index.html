@@ -1,0 +1,377 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="谢志超">
+  
+  
+  
+  
+    <meta name="description" content="React Hooks 使用总结React Hooks 作为官方推荐的 React 打开方式，是否真的很香？我经过在项目中不断使用后，觉得 Hooks 是真香，不过过程中踩过的坑也不少，需要不断总结才能用好它，下面总结了一些使用经验。
+引言Hooks 组件其实是能力更强的函数式组件，函数式组件大家应该都用过，也可能用过并没有觉察到，我举几个例子：
+
+类组件中，我们经常会把 render 方法...">
+  
+  <title>React Hooks 使用总结 [ 谢志超's Pages ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/vegas/2.2.0/vegas.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/highlight.js/9.3.0/styles/railscasts.min.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/fancybox/2.1.7/css/jquery.fancybox.min.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="//libs.cdnjs.net/plyr/2.0.1/plyr.css">
+
+  
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+<div class="side-navigate hide-area">
+  
+  
+    <div class="item next">
+      <a href="/2020/03/11/%E6%96%B0%E5%86%A0%E8%82%BA%E7%82%8E%E4%B9%8B%E6%88%91%E6%83%B3/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        新冠肺炎之我想
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/me.png"/>
+          <div id="homelink">谢志超's Pages</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">归档</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/subject">专题</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>React Hooks 使用总结</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2020-08-30</span>
+      
+        <span id = "post-title-updated">修改于 2020-08-30</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/JavaScript/">JavaScript</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/JavaScript/">JavaScript</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/React/">React</a>
+      
+        
+          /
+        
+        
+        <a href="/tags/Hooks/">Hooks</a>
+      
+      </span>
+      
+    </p>
+    
+    <h1 id="React-Hooks-使用总结"><a href="#React-Hooks-使用总结" class="headerlink" title="React Hooks 使用总结"></a>React Hooks 使用总结</h1><p>React Hooks 作为官方推荐的 React 打开方式，是否真的很香？我经过在项目中不断使用后，觉得 Hooks 是真香，不过过程中踩过的坑也不少，需要不断总结才能用好它，下面总结了一些使用经验。</p>
+<h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>Hooks 组件其实是能力更强的函数式组件，函数式组件大家应该都用过，也可能用过并没有觉察到，我举几个例子：</p>
+<ul>
+<li>类组件中，我们经常会把 render 方法中的某些模块抽象出来，比如：循环列表，我们可以直接写在 render 方法的 jsx 中，不过抽出一个方法，把 list 数据传过去，在方法中循环生成 jsx 返回来，代码更清晰，复用性更好。</li>
+<li>更进一步，我们可以把通用的渲染方法放到父组件，供所有子组件复用。</li>
+<li>再进一步，直接就写成一个纯函数，复用性更好，其他组件都可以来复用它。这个独立的渲染函数在 React 里面就是一个函数式组件，它就是一个组件，不过它没有对象实例、对象属性和对象方法。</li>
+</ul>
+<p>Hooks 组件其实就是函数式组件，不过它是增强版的，它有状态，并且可以在状态变化的时候做一些响应处理。</p>
+<h2 id="Hooks-组件的重要特点"><a href="#Hooks-组件的重要特点" class="headerlink" title="Hooks 组件的重要特点"></a>Hooks 组件的重要特点</h2><p>看完引言，不知道大家有没有抓到重点，我来总结一下（个人经验）：</p>
+<ul>
+<li>首先，最根本的区别：<strong>函数式组件没有对象实例、对象属性和对象方法</strong>。这点很重要，很多 Hooks 组件的特殊性就因此而来。</li>
+<li>其次，Hooks 组件和函数式组件的区别：Hooks 有状态，并且可以定义状态响应逻辑，Hooks 中叫副作用(Effect)。</li>
+<li>然后，Hooks 组件没有生命周期钩子，不过我们可以通过状态响应去实现大部分钩子函数同等的效果（参阅官方文档）。</li>
+<li>最后，要注意 Hooks 组件中的闭包。<strong>这里容易掉坑！</strong></li>
+</ul>
+<h2 id="Hooks-为什么香"><a href="#Hooks-为什么香" class="headerlink" title="Hooks 为什么香"></a>Hooks 为什么香</h2><p>Hooks 刚出来时，这个问题就是大家最关心的，官方也有两点说明，不过这两点也需要大量实践和总结才会深有感受。</p>
+<h3 id="在组件之间复用状态逻辑很难"><a href="#在组件之间复用状态逻辑很难" class="headerlink" title="在组件之间复用状态逻辑很难"></a>在组件之间复用状态逻辑很难</h3><p>引言中有说到复用：抽取类方法、抽取父类方法、抽取纯函数组件。</p>
+<ul>
+<li>抽取类方法和父类方法，存在的问题是，只有这类组件或这类父子组件可以复用。而且，抽取父类方法还会面临子类继承时，错误覆盖的问题。</li>
+<li>抽取纯函数组件，这种方式其实挺好的，不过只适合纯逻辑的抽取，因为它没有状态，只有 props, 很多场景满足不了需求。 如果我想写一个定时器，还得使用者来定义计数状态，这个就不符合解耦原则了，而且也没有生命周期钩子，我无法在组件卸载时把定时器关掉。</li>
+</ul>
+<p>然而，Hooks 解决了纯函数组件的这些难题，同时还保持了纯暗示组件的优点。</p>
+<blockquote>
+<p>类组件中也有解决方案：render props 和 高阶组件，不过使用起来很麻烦，且难以理解。</p>
+</blockquote>
+<h3 id="复杂组件变得难以理解"><a href="#复杂组件变得难以理解" class="headerlink" title="复杂组件变得难以理解"></a>复杂组件变得难以理解</h3><p>类组件的常规做法就是：在 didMount 中去做 数据请求、事件监听的绑定、定时器的初始化等操作，然后又要在 willUnmount 中去清除掉它们。这些不相关的逻辑被强行杂糅进生命周期钩子函数中了，这会让测试和阅读都有困难。</p>
+<p>Hooks 中没有生命周期钩子函数，你完全可以自己去设计组织你的逻辑！</p>
+<h2 id="欢迎交流"><a href="#欢迎交流" class="headerlink" title="欢迎交流"></a>欢迎交流</h2><p>个人读书公众号，欢迎交流！<br><img src="https://user-gold-cdn.xitu.io/2020/7/20/17369f9fc036ae62?w=320&amp;h=370&amp;f=jpeg&amp;s=32348" alt="读书三到-读书，学习技术"></p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#React-Hooks-使用总结"><span class="toc-text">React Hooks 使用总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hooks-组件的重要特点"><span class="toc-text">Hooks 组件的重要特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hooks-为什么香"><span class="toc-text">Hooks 为什么香</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#在组件之间复用状态逻辑很难"><span class="toc-text">在组件之间复用状态逻辑很难</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#复杂组件变得难以理解"><span class="toc-text">复杂组件变得难以理解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#欢迎交流"><span class="toc-text">欢迎交流</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+
+  
+
+  
+    <a href="/2020/03/11/%E6%96%B0%E5%86%A0%E8%82%BA%E7%82%8E%E4%B9%8B%E6%88%91%E6%83%B3/" class="next">下一篇 新冠肺炎之我想 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by 谢志超 using
+      <a href="http://hexo.io" target="_blank" rel="noopener">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random" target="_blank" rel="noopener">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/me.png">
+    <p id="description">一个Web全栈开发工程师的网络日志</p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/xie-zhichao" target="_blank" rel="noopener">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?53c2fc6d798b4e091e3315bd76a5634c";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="//libs.cdnjs.net/jquery/2.2.3/jquery.js"></script>
+  
+    <script src="//libs.cdnjs.net/vegas/2.2.0/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="//libs.cdnjs.net/highlight.js/9.3.0/highlight.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/fancybox/2.1.7/js/jquery.fancybox.min.js"></script>
+  
+    <script src="//libs.cdnjs.net/plyr/2.0.1/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script>
+</body>
+</html>
+
